@@ -1,0 +1,136 @@
+apply plugin: 'com.android.application'
+
+if (!rootProject.optimizeForDevelopment) {
+    apply from: '../gradle/plugins/checkstyle-android.gradle'
+    apply from: '../gradle/plugins/findbugs-android.gradle'
+}
+
+if (rootProject.testCoverage) {
+    apply plugin: 'jacoco'
+}
+
+repositories {
+    jcenter()
+    google()
+}
+
+//noinspection GroovyAssignabilityCheck
+configurations.all {
+    resolutionStrategy {
+        force "com.android.support:support-annotations:${androidSupportLibraryVersion}"
+    }
+}
+
+dependencies {
+    compile project(':k9mail-library')
+    compile project(':plugins:Android-PullToRefresh:library')
+    compile project(':plugins:HoloColorPicker')
+    compile project(':plugins:openpgp-api-lib:openpgp-api')
+    compile "com.squareup.okio:okio:${okioVersion}"
+    compile 'commons-io:commons-io:2.4'
+    compile "com.android.support:support-v4:${androidSupportLibraryVersion}"
+    compile 'net.sourceforge.htmlcleaner:htmlcleaner:2.18'
+    compile 'de.cketti.library.changelog:ckchangelog:1.2.1'
+    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'com.splitwise:tokenautocomplete:2.0.7'
+    compile 'de.cketti.safecontentresolver:safe-content-resolver-v14:0.9.0'
+    compile 'com.github.amlcurran.showcaseview:library:5.4.1'
+
+    //ben ekledim
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    //implementation 'com.android.support:appcompat-v7:28.0.0'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'name.neuhalfen.projects.crypto.bouncycastle.openpgp:bouncy-gpg:2.0.+'
+    implementation 'org.assertj:assertj-core:2.9.1'
+
+    compile 'org.bouncycastle:bcprov-jdk15on:1.60'
+    compile 'org.bouncycastle:bcpg-jdk15on:1.60'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1' //bitis
+
+    testCompile "org.robolectric:robolectric:${robolectricVersion}"
+    testCompile "junit:junit:${junitVersion}"
+    testCompile "org.mockito:mockito-core:${mockitoVersion}"
+    testCompile 'org.jsoup:jsoup:1.10.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+}
+
+android {
+    compileSdkVersion androidCompileSdkVersion.toInteger()
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        multiDexEnabled  true //ben ekledim implementation 'org.assertj:assertj-core:2.9.1' icin
+
+        applicationId "com.fsck.k9.material"
+        testApplicationId "com.fsck.k9.tests"
+
+        versionCode 24007
+        versionName '5.208'
+
+        minSdkVersion 21
+        targetSdkVersion 22
+
+        generatedDensities = ['mdpi', 'hdpi', 'xhdpi']
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release
+    }
+
+    buildTypes {
+        release {
+            if (project.hasProperty('storeFile')) {
+                signingConfig signingConfigs.release
+            }
+
+            buildConfigField "boolean", "DEVELOPER_MODE", "false"
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+            testCoverageEnabled rootProject.testCoverage
+
+            buildConfigField "boolean", "DEVELOPER_MODE", "true"
+        }
+    }
+
+    // Do not abort build if lint finds errors
+    lintOptions {
+        abortOnError false
+        lintConfig file("$rootProject.projectDir/config/lint/lint.xml")
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'LICENSE.txt'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    buildToolsVersion '26.0.2'
+}
+
+if (project.hasProperty('keyAlias')) {
+    android.signingConfigs.release.keyAlias = keyAlias
+}
+if (project.hasProperty('keyPassword')) {
+    android.signingConfigs.release.keyPassword = keyPassword
+}
+if (project.hasProperty('storeFile')) {
+    android.signingConfigs.release.storeFile = file(storeFile)
+}
+if (project.hasProperty('storePassword')) {
+    android.signingConfigs.release.storePassword = storePassword
+}
