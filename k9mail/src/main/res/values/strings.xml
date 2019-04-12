@@ -1257,5 +1257,8 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="anahtar">Anahtar Oluştur</string>
     <string name="keyCreation_action">key creation</string>
     <string name="anahtar_olustur">anahtar oluştur</string>
+    <string name="anahtarlar">Anahtar</string>
+    <string name="anahtar_ara">Anahtar ara</string>
+    <string name="anahtar_indir">Anahtar indir</string>
 
 </resources>

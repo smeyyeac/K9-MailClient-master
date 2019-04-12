@@ -1,10 +1,13 @@
 package com.fsck.k9.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.icu.text.StringPrepParseException;
 import android.os.Bundle;
 //import android.support.v7.app.AppCompatActivity;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.fsck.k9.OpenPGP;
+import com.fsck.k9.FileKey;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.K9Activity;
 
@@ -25,6 +29,7 @@ import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
 //import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -36,6 +41,7 @@ import java.util.logging.Logger;
 public class KeyCreation extends K9Activity implements View.OnClickListener{
 
     private OpenPGP openPgp;
+    private  FileKey filekey;
 
    // private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(OpenPGP.class);
    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -43,13 +49,6 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
    private TextView textPublic,textPrivate;
    private  Button buttonAnahtar;
 
-    /*static {
-        try {
-            SECURE_RANDOM = SecureRandom.getInstanceStrong();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Could not initialize a strong secure random instance", e);
-        }
-    }*/
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.key_creation);
@@ -63,15 +62,31 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
         buttonAnahtar = (Button) findViewById(R.id.buttonAnahtar);
 
         findViewById(R.id.buttonAnahtar).setOnClickListener(this);
+
+        //dosya icin eklendi
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
+        }
+
     }
 
+    //dosya icin eklendi
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 1000:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Log.e("garanti", "garanted");
+                }
+        }
+    }
 
     @Override
     public void onClick(View v) { //anahtar oluşturma
         anahtar_olustur();
        /* try {
             generateKeysAndEncryptAndDecryptMessage();
-        } catch (PGPException e) {
             e.printStackTrace();
         } catch (SignatureException e) {
             e.printStackTrace();
@@ -113,7 +128,9 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
         textPublic.setText(armoredKeyPair.publicKey());
         textPrivate.setText(armoredKeyPair.privateKey());
 
-
+        filekey=new FileKey();
+        filekey.createKeyFile("publicKey", armoredKeyPair.publicKey(),email);
+        filekey.createKeyFile("privateKey", armoredKeyPair.publicKey(),email);
     }
 
 }

@@ -37,6 +37,7 @@ import com.fsck.k9.Account.Searchable;
 import com.fsck.k9.Account.ShowPictures;
 import com.fsck.k9.ColorPicker;
 import com.fsck.k9.K9;
+import com.fsck.k9.KeySearch;
 import com.fsck.k9.NotificationSetting;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
@@ -759,8 +760,8 @@ public class AccountSettings<preferenceScreen> extends K9PreferenceActivity {
             mCryptoMenu.setSummary(R.string.account_settings_no_openpgp_provider_installed);
         }
 // ben ekledim anahtar olusturma clasına gidiyor
-        Preference button = findPreference(getString(R.string.anahtar_olustur));
-        button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        Preference createbutton = findPreference(getString(R.string.anahtar_olustur));
+        createbutton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intocan = new Intent(AccountSettings.this, KeyCreation.class);
@@ -768,6 +769,17 @@ public class AccountSettings<preferenceScreen> extends K9PreferenceActivity {
                 return true;
             }
         });
+
+        Preference searchButton = findPreference(getString(R.string.anahtar_ara));
+        searchButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intocan = new Intent(AccountSettings.this, KeySearch.class);
+                startActivity(intocan);
+                return true;
+            }
+        });
+
 
         mSearchScreen = (PreferenceScreen) findPreference(PREFERENCE_SCREEN_SEARCH);
 

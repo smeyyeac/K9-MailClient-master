@@ -9,6 +9,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.fsck.k9.KeySearch;
+import com.fsck.k9.KeyServer;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
 import com.fsck.k9.activity.K9Activity;
@@ -44,7 +46,7 @@ public class WelcomeMessage extends K9Activity implements OnClickListener{
             case R.id.next: {
                 AccountSetupBasics.actionNewAccount(this);
 
-                /*Intent intocan = new Intent(WelcomeMessage.this, KeyCreation.class);
+                /*Intent intocan = new Intent(WelcomeMessage.this, KeySearch.class);
                 startActivity(intocan);*/
                 finish();
                 break;

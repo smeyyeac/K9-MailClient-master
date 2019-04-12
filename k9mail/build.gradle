@@ -45,6 +45,9 @@ dependencies {
     implementation 'name.neuhalfen.projects.crypto.bouncycastle.openpgp:bouncy-gpg:2.0.+'
     implementation 'org.assertj:assertj-core:2.9.1'
 
+    implementation 'net.sf.jtidy:jtidy:r938'
+    implementation 'org.jsoup:jsoup:1.11.3'
+
     compile 'org.bouncycastle:bcprov-jdk15on:1.60'
     compile 'org.bouncycastle:bcpg-jdk15on:1.60'
     compile 'org.slf4j:slf4j-api:1.7.25'

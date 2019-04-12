@@ -13,9 +13,13 @@
         android:normalScreens="true"
         android:smallScreens="true"/>
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 
     <!-- Needed to mark a contact as contacted -->
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
@@ -260,6 +264,17 @@
         <activity
             android:name=".activity.KeyCreation"
             android:configChanges="locale"
+            android:label="@string/anahtar_olustur"
+            />
+        <activity
+            android:name=".KeySearch"
+            android:configChanges="locale"
+            android:label="@string/anahtar_ara"
+            />
+        <activity
+            android:name=".KeyResultActivity"
+            android:configChanges="locale"
+            android:label="@string/anahtar_indir"
             />
 
         <activity

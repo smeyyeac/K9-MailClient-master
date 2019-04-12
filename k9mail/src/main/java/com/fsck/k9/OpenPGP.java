@@ -1,5 +1,6 @@
 package com.fsck.k9;
 
+import android.os.Environment;
 import android.util.Log;
 
 import org.bouncycastle.bcpg.ArmoredOutputStream;
@@ -26,8 +27,13 @@ import org.bouncycastle.openpgp.operator.bc.BcPGPKeyPair;
 import org.bouncycastle.util.io.Streams;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -257,7 +263,6 @@ public class OpenPGP {
         }
         return keyring;
     }
-
 
 }
 
