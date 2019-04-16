@@ -475,8 +475,8 @@
         android:key="@string/anahtarlar">
 
         <Preference
-            android:title="@string/anahtar_olustur"
-            android:key="@string/anahtar_olustur" />
+            android:title="@string/anahtar_olus"
+            android:key="@string/anahtar_olus" />
 
         <Preference
             android:title="@string/anahtar_ara"

@@ -760,7 +760,7 @@ public class AccountSettings<preferenceScreen> extends K9PreferenceActivity {
             mCryptoMenu.setSummary(R.string.account_settings_no_openpgp_provider_installed);
         }
 // ben ekledim anahtar olusturma clasına gidiyor
-        Preference createbutton = findPreference(getString(R.string.anahtar_olustur));
+        Preference createbutton = findPreference(getString(R.string.anahtar_olus));
         createbutton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
