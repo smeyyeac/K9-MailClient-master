@@ -1,6 +1,11 @@
 package com.fsck.k9.activity;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.security.Security;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +27,7 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -48,6 +54,8 @@ import com.fsck.k9.Account.MessageFormat;
 import com.fsck.k9.FontSizes;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
+import com.fsck.k9.KeyOperation;
+import com.fsck.k9.OpenPGPSignature;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.MessageLoaderHelper.MessageLoaderCallbacks;
@@ -95,6 +103,13 @@ import com.fsck.k9.message.SimpleMessageFormat;
 import com.fsck.k9.ui.EolConvertingEditText;
 import com.fsck.k9.ui.compose.QuotedMessageMvpView;
 import com.fsck.k9.ui.compose.QuotedMessagePresenter;
+
+import org.bouncycastle.openpgp.PGPException;
+import org.bouncycastle.openpgp.PGPPrivateKey;
+import org.bouncycastle.openpgp.PGPSecretKey;
+import org.bouncycastle.openpgp.operator.PBESecretKeyDecryptor;
+import org.bouncycastle.openpgp.operator.jcajce.JcaPGPDigestCalculatorProviderBuilder;
+import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 
 
 @SuppressWarnings("deprecation")
@@ -414,6 +429,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         mSubjectView.addTextChangedListener(draftNeedsChangingTextWatcher);
 
         mMessageContentView.addTextChangedListener(draftNeedsChangingTextWatcher);
+        Log.e(    "mMesasageicerik",mMessageContentView.getText().toString());
+
 
         /*
          * We set this to invisible by default. Other methods will turn it back on if it's
@@ -626,6 +643,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             // Only use EXTRA_SUBJECT if the subject hasn't already been set by the mailto URI
             if (subject != null && mSubjectView.getText().length() == 0) {
                 mSubjectView.setText(subject);
+                Log.e("konuuuuuuuuuuuuuuu",mSubjectView.getText().toString());
             }
 
             recipientPresenter.initFromSendOrViewIntent(intent);
@@ -765,7 +783,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 .setIsPgpInlineEnabled(cryptoStatus.isPgpInlineModeEnabled());
 
         quotedMessagePresenter.builderSetProperties(builder);
-
+        Log.e("createeeeee","creste");
+        Log.e("createeeeee",mMessageContentView.getCharacters());
+       // builder.setText(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
+        Log.e("createeeeee",mSignatureView.getCharacters());
         return builder;
     }
 
@@ -1000,6 +1021,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         switch (item.getItemId()) {
             case R.id.send:
                 checkToSendMessage();
+                OpenPGPSignature.imzalama( mMessageContentView.getCharacters());
+                OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();
@@ -1456,6 +1479,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         }
 
         String body = mailTo.getBody();
+
         if (body != null && !body.isEmpty()) {
             mMessageContentView.setCharacters(body);
         }
