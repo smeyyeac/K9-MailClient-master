@@ -19,6 +19,7 @@ public class IdentityHeaderBuilder {
     private Identity identity;
     private boolean signatureChanged;
     private String signature;
+    private String signatureMessage;
     private boolean identityChanged;
     private QuotedTextMode quotedTextMode;
     private MessageReference messageReference;
@@ -166,6 +167,11 @@ public class IdentityHeaderBuilder {
 
     public IdentityHeaderBuilder setBody(TextBody body) {
         this.body = body;
+        return this;
+    }
+
+    public IdentityHeaderBuilder setSignatureMessage(String signatureMessage) {
+        this.signatureMessage = signatureMessage;
         return this;
     }
 

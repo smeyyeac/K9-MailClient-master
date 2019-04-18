@@ -3,9 +3,13 @@ package com.fsck.k9.activity;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.security.Security;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +55,7 @@ import android.widget.Toast;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
+import com.fsck.k9.FileKey;
 import com.fsck.k9.FontSizes;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
@@ -325,7 +330,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     };
 
     private FontSizes mFontSizes = K9.getFontSizes();
-
+    final Intent intent = getIntent();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -351,11 +356,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         } else {
             setContentView(R.layout.message_compose);
         }
-
+        final Intent intent = getIntent();
         // on api level 15, setContentView() shows the progress bar for some reason...
         setProgressBarIndeterminateVisibility(false);
 
-        final Intent intent = getIntent();
 
         String messageReferenceString = intent.getStringExtra(EXTRA_MESSAGE_REFERENCE);
         mMessageReference = MessageReference.parse(messageReferenceString);
@@ -622,13 +626,17 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             }
 
             String type = intent.getType();
+            Log.d("typeolusum",type);
             if (Intent.ACTION_SEND.equals(action)) {
                 Uri stream = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                Log.d("buradasend","send");
                 if (stream != null) {
                     attachmentPresenter.addAttachment(stream, type);
                 }
             } else {
                 List<Parcelable> list = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+               // attachmentPresenter.addAttachment(deneme,type);
+
                 if (list != null) {
                     for (Parcelable parcelable : list) {
                         Uri stream = (Uri) parcelable;
@@ -786,11 +794,12 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         Log.e("createeeeee","creste");
         Log.e("createeeeee",mMessageContentView.getCharacters());
        // builder.setText(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
-        Log.e("createeeeee",mSignatureView.getCharacters());
+       // Log.e("createeeeee",OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
         return builder;
     }
 
     private void checkToSendMessage() {
+        addFile();
         if (mSubjectView.getText().length() == 0 && !alreadyNotifiedUserOfEmptySubject) {
             Toast.makeText(this, R.string.empty_subject, Toast.LENGTH_LONG).show();
             alreadyNotifiedUserOfEmptySubject = true;
@@ -1020,9 +1029,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.send:
+                FileKey.createSignatureFile(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
                 checkToSendMessage();
-                OpenPGPSignature.imzalama( mMessageContentView.getCharacters());
-                OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
+               // OpenPGPSignature.imzalama( mMessageContentView.getCharacters());
+                //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();
@@ -1731,13 +1741,13 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         public void showPickAttachmentDialog(int requestCode) {
             requestCode |= REQUEST_MASK_ATTACHMENT_PRESENTER;
 
-            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+           Intent i = new Intent(Intent.ACTION_GET_CONTENT);
             i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             i.addCategory(Intent.CATEGORY_OPENABLE);
             i.setType("*/*");
             isInSubActivity = true;
 
-            startActivityForResult(Intent.createChooser(i, null), requestCode);
+            startActivityForResult(Intent.createChooser(i, null), requestCode); //atachment acılır ekran
         }
 
         @Override
@@ -1800,5 +1810,18 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     getString(R.string.message_compose_attachments_skipped_toast), Toast.LENGTH_LONG).show();
         }
     };
+    public void addFile(){
+        Intent intentdosya = new Intent();
+        intentdosya.setAction(Intent.ACTION_SEND_MULTIPLE);
+        intentdosya.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
+        intentdosya.setType("*/*"); /* This example is sharing jpeg images. */
+
+        ArrayList<Uri> files = new ArrayList<Uri>();
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/keyFile/_imza_imza.asc");
+        Uri uri = Uri.fromFile(file);
+        files.add(uri);
+        attachmentPresenter.addAttachment(uri,"/*/" );
+        intentdosya.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+    }
 
 }

@@ -55,6 +55,7 @@ public abstract class MessageBuilder {
     private Identity identity;
     private SimpleMessageFormat messageFormat;
     private String text;
+    private String SignatureMessage;
     private List<Attachment> attachments;
     private String signature;
     private QuoteStyle quoteStyle;
@@ -204,6 +205,7 @@ public abstract class MessageBuilder {
                 .setSignature(signature)
                 .setSignatureChanged(signatureChanged)
                 .setBody(body)
+                .setSignatureMessage(SignatureMessage)
                 .setBodyPlain(bodyPlain)
                 .build();
     }
@@ -409,6 +411,10 @@ public abstract class MessageBuilder {
 
     public MessageBuilder setSignature(String signature) {
         this.signature = signature;
+        return this;
+    }
+    public MessageBuilder setSignatureMessage(String SignatureMessage){
+        this.SignatureMessage = SignatureMessage;
         return this;
     }
 

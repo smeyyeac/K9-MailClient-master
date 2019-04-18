@@ -1261,5 +1261,8 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="anahtar_ara">Anahtar ara</string>
     <string name="anahtar_indir">Anahtar indir</string>
     <string name="anahtar_olus">Anahtar oluştur</string>
+    <string name="message_signature">İmzala</string>
+    <string name="secili_anahtar">Seçili anahtar</string>
+    <string name="secili_anah">Anahtar seç</string>
 
 </resources>

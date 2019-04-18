@@ -1,6 +1,7 @@
 package com.fsck.k9.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.icu.text.StringPrepParseException;
@@ -47,7 +48,7 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
    private EditText editKeySize,editName,editEmail,editParola;
    private TextView textPublic,textPrivate;
-   private  Button buttonAnahtar;
+   private  Button buttonAnahtar,gozat;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +61,10 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
         textPublic = (TextView) findViewById(R.id.textViewPublic);
         textPrivate = (TextView) findViewById(R.id.textViewPrivate);
         buttonAnahtar = (Button) findViewById(R.id.buttonAnahtar);
+        gozat=(Button) findViewById(R.id.button2);
 
         findViewById(R.id.buttonAnahtar).setOnClickListener(this);
+        findViewById(R.id.button2).setOnClickListener(this);
 
         //dosya icin eklendi
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -85,6 +88,7 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) { //anahtar oluşturma
         anahtar_olustur();
+       // showPickAttachmentDialog(1);
        /* try {
             generateKeysAndEncryptAndDecryptMessage();
             e.printStackTrace();
@@ -97,6 +101,17 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
         } catch (IOException e) {
             e.printStackTrace();
         }*/
+    }
+    public void showPickAttachmentDialog(int requestCode) {
+        requestCode |= 1;
+
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("*/*");
+        Boolean isInSubActivity = true;
+
+        startActivityForResult(Intent.createChooser(i, null), requestCode);
     }
 
     public void anahtar_olustur(){
@@ -130,7 +145,7 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
 
         filekey=new FileKey();
         filekey.createKeyFile("publicKey", armoredKeyPair.publicKey(),email);
-        filekey.createKeyFile("privateKey", armoredKeyPair.publicKey(),email);
+        filekey.createKeyFile("privateKey", armoredKeyPair.privateKey(),email);
     }
 
 }

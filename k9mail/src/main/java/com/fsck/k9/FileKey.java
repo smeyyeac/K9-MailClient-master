@@ -18,9 +18,31 @@ public class FileKey {
         keyfile.mkdir();
         Log.e("Dosya Yeri", String.valueOf(Environment.getExternalStorageDirectory().getAbsolutePath()));
         File file = new File(keyfile, fileName);
+        Log.e("Dosya Yeri", String.valueOf(file));
         try {
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(key.getBytes());
+            fos.close();
+            Log.e("Saved", "Create");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e("Fail", e.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Use Storage.", "Fail");
+        }
+    }
+    public static  void createSignatureFile(String signature) {
+        String mainFile="signatureFile";
+        String fileName =  "signature" + ".asc";
+        java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
+        keyfile.mkdir();
+        Log.e("Dosya Yeri", String.valueOf(Environment.getExternalStorageDirectory().getAbsolutePath()));
+        File file = new File(keyfile, fileName);
+        Log.e("Dosya Yeri", String.valueOf(file));
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(signature.getBytes());
             fos.close();
             Log.e("Saved", "Create");
         } catch (FileNotFoundException e) {

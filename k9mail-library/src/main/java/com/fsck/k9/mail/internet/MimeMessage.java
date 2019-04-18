@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.fsck.k9.mail.Address;
 import com.fsck.k9.mail.Body;
@@ -158,6 +159,8 @@ public class MimeMessage extends Message {
     @Override
     public String getContentType() {
         String contentType = getFirstHeader(MimeHeader.HEADER_CONTENT_TYPE);
+        Log.e("contentType", contentType); //ek varsa mixed
+        Log.e("conTypee",MimeUtility.unfoldAndDecode(contentType));
         return (contentType == null) ? "text/plain" : MimeUtility.unfoldAndDecode(contentType);
     }
 

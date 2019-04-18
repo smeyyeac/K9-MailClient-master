@@ -984,6 +984,7 @@ public class MimeUtility {
     }
 
     public static boolean isDefaultMimeType(String mimeType) {
+        Log.e("defaulT",String.valueOf(isSameMimeType(mimeType, DEFAULT_ATTACHMENT_MIME_TYPE)));
         return isSameMimeType(mimeType, DEFAULT_ATTACHMENT_MIME_TYPE);
     }
 
@@ -995,6 +996,7 @@ public class MimeUtility {
         }
 
         BinaryTempFileBody tempBody;
+
         if (MimeUtil.isMessage(contentType)) {
             tempBody = new BinaryTempFileMessageBody(contentTransferEncoding);
         } else {
@@ -1073,18 +1075,23 @@ public class MimeUtility {
             extension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase(Locale.US);
             returnedType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }
+        Log.d("ifbasi","salak");
+        Log.w(LOG_TAG, "Unsupported encoding: " +extension);
+        Log.d("ifbasi",filename);
         // If the MIME type set by the user's mailer is application/octet-stream, try to figure
         // out whether there's a sane file type extension.
         if (returnedType != null && !isSameMimeType(returnedType, DEFAULT_ATTACHMENT_MIME_TYPE)) {
+            Log.w("returned type",returnedType);
             return returnedType;
         } else if (extension != null) {
             for (String[] contentTypeMapEntry : MIME_TYPE_BY_EXTENSION_MAP) {
                 if (contentTypeMapEntry[0].equals(extension)) {
+                    Log.w("returned type",contentTypeMapEntry[1]);
                     return contentTypeMapEntry[1];
                 }
             }
         }
-
+        Log.d("ifsonu",DEFAULT_ATTACHMENT_MIME_TYPE);
         return DEFAULT_ATTACHMENT_MIME_TYPE;
     }
 
@@ -1117,6 +1124,8 @@ public class MimeUtility {
      * @return A String representing a MIME content-transfer-encoding
      */
     public static String getEncodingforType(String type) {
+        type="application/pgp-signature";
+        Log.w("typee myutility ",type);
         if (type == null) {
             return (MimeUtil.ENC_BASE64);
         } else if (MimeUtil.isMessage(type)) {
@@ -1127,6 +1136,7 @@ public class MimeUtility {
             return (MimeUtil.ENC_8BIT);
         } else {
             return (MimeUtil.ENC_BASE64);
+           // return (MimeUtil.ENC_7BIT);
         }
     }
 
@@ -1135,7 +1145,7 @@ public class MimeUtility {
     }
 
     public static boolean isMessage(String mimeType) {
-        return isSameMimeType(mimeType, "message/rfc822");
+      return isSameMimeType(mimeType, "message/rfc822");
     }
 
     public static boolean isSameMimeType(String mimeType, String otherMimeType) {

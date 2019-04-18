@@ -481,6 +481,9 @@
         <Preference
             android:title="@string/anahtar_ara"
             android:key="@string/anahtar_ara" />
+        <Preference
+            android:title="@string/secili_anah"
+            android:key="@string/secili_anah" />
 
     </PreferenceScreen>
 

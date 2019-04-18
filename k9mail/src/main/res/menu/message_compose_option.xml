@@ -26,6 +26,11 @@
         android:icon="?attr/iconActionSave"
         />
     <item
+        android:id="@+id/message_signature"
+        android:title="@string/message_signature"
+        android:showAsAction="never"
+        />
+    <item
         android:id="@+id/discard"
         android:alphabeticShortcut="q"
         android:title="@string/discard_action"

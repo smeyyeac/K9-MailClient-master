@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import com.fsck.k9.activity.compose.ComposeCryptoStatus.AttachErrorState;
 import com.fsck.k9.activity.loader.AttachmentContentLoader;
@@ -103,7 +104,13 @@ public class AttachmentPresenter {
         }
         return false;
     }
-
+    public ArrayList<Attachment> createAttachmentListS() {
+        ArrayList<Attachment> result = new ArrayList<>();
+        for (Attachment attachment : attachments.values()) {
+            result.add(attachment);
+        }
+        return result;
+    }
     public ArrayList<Attachment> createAttachmentList() {
         ArrayList<Attachment> result = new ArrayList<>();
         for (Attachment attachment : attachments.values()) {
@@ -147,7 +154,7 @@ public class AttachmentPresenter {
 
         int loaderId = getNextFreeLoaderId();
         Attachment attachment = Attachment.createAttachment(uri, loaderId, contentType);
-
+        Log.w("AAtac", String.valueOf(attachment.uri));
         addAttachmentAndStartLoader(attachment);
     }
 
@@ -162,6 +169,8 @@ public class AttachmentPresenter {
                 allPartsAvailable = false;
                 continue;
             }
+
+
             addAttachment(attachmentViewInfo);
         }
 
@@ -195,6 +204,7 @@ public class AttachmentPresenter {
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(LOADER_ARG_ATTACHMENT, attachment.uri);
+        Log.w("Atac", String.valueOf(attachment.uri));
         loaderManager.initLoader(attachment.loaderId, bundle, mAttachmentInfoLoaderCallback);
     }
 
