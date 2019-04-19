@@ -41,6 +41,7 @@ import com.fsck.k9.KeySearch;
 import com.fsck.k9.NotificationSetting;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
+import com.fsck.k9.SelectedKeyActivity;
 import com.fsck.k9.activity.ChooseFolder;
 import com.fsck.k9.activity.ChooseIdentity;
 import com.fsck.k9.activity.ColorPickerDialog;
@@ -775,6 +776,16 @@ public class AccountSettings<preferenceScreen> extends K9PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intocan = new Intent(AccountSettings.this, KeySearch.class);
+                startActivity(intocan);
+                return true;
+            }
+        });
+
+        Preference selectedKeyButton = findPreference(getString(R.string.secili_anah));
+        selectedKeyButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intocan = new Intent(AccountSettings.this, SelectedKeyActivity.class);
                 startActivity(intocan);
                 return true;
             }

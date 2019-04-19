@@ -267,6 +267,11 @@
             android:label="@string/anahtar_olustur"
             />
         <activity
+            android:name=".SelectedKeyActivity"
+            android:configChanges="locale"
+            android:label="@string/secili_anah"
+            />
+        <activity
             android:name=".KeySearch"
             android:configChanges="locale"
             android:label="@string/anahtar_ara"
