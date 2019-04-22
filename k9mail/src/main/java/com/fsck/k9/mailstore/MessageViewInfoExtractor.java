@@ -223,7 +223,6 @@ public class MessageViewInfoExtractor {
     public static String dogrulamaFrom() {
         return (messageFrom);
     }
-
     public void dogrulama(String dogrulaText, String messageFrom){
         dogrula(dogrulaText, messageFrom);
     }
