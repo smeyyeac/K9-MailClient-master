@@ -164,7 +164,6 @@ public class MessageDecryptVerifier {
                 }
             }
         }
-
         return signedParts;
     }
 

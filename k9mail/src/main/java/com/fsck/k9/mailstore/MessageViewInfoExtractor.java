@@ -30,6 +30,7 @@ import com.fsck.k9.ui.crypto.MessageCryptoAnnotations;
 import com.fsck.k9.ui.crypto.MessageCryptoSplitter;
 import com.fsck.k9.ui.crypto.MessageCryptoSplitter.CryptoMessageParts;
 import com.fsck.k9.ui.messageview.AttachmentView;
+import com.fsck.k9.mailstore.AttachmentViewInfo;
 
 import static com.fsck.k9.mail.Signature.OpenPGPSignature.*;
 import static com.fsck.k9.mail.internet.MimeUtility.getHeaderParameter;
@@ -52,7 +53,8 @@ public class MessageViewInfoExtractor {
     private final Context context;
     private final AttachmentInfoExtractor attachmentInfoExtractor;
     private final HtmlSanitizer htmlSanitizer;
-    private String dogrulaText;
+    private static String dogrulaText;
+
 
 
     public static MessageViewInfoExtractor getInstance() {
@@ -202,15 +204,14 @@ public class MessageViewInfoExtractor {
             dogrulaText=text.toString();
             String content = HtmlConverter.wrapMessageContent(html);
             String sanitizedHtml = htmlSanitizer.sanitize(content);
-            dogrulama();
             return new ViewableExtractedText(text.toString(), sanitizedHtml);
         } catch (Exception e) {
             throw new MessagingException("Couldn't extract viewable parts", e);
         }
     }
 
-    public void dogrulama(){
-        dogrula(dogrulaText);
+    public static String dogrulamaMetni(){
+        return (dogrulaText);
     }
     /**
      * Use the contents of a {@link com.fsck.k9.mail.internet.Viewable} to create the HTML to be displayed.

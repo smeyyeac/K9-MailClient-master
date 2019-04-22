@@ -104,7 +104,7 @@ public class OpenPGPSignature {
         PGPSecretKey keys = null;
 
         try {
-            keys = KeyOperation.getPrivateSecretKey(readKeyFile("as" + "_privateKey"));
+            keys = KeyOperation.getPrivateSecretKey(readKeyFile("sumeyyeazizecengiz@gmail.com" + "_privateKey"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (PGPException e) {
@@ -116,12 +116,10 @@ public class OpenPGPSignature {
         try {
             PBESecretKeyDecryptor b = new JcePBESecretKeyDecryptorBuilder(new JcaPGPDigestCalculatorProviderBuilder().setProvider("BC").build()).setProvider("BC").build(charParola);
             pKey = keys.extractPrivateKey(b);
-            Log.e("suradaa","defol lan");
         } catch (PGPException e) {
             e.printStackTrace();
         }
         try {
-            Log.e("hatadaaaa","defol lan");
             imza = OpenPGPSignature.signArmoredAscii(pKey,imzalanacak , 2);
             Log.e("imza", imza );
             return imza;
@@ -194,7 +192,7 @@ public class OpenPGPSignature {
 
         PGPPublicKey keys = null;
         try {
-            keys = (PGPPublicKey) KeyOperation.getPublicKey(readKeyFile("as" + "_publicKey"));
+            keys = (PGPPublicKey) KeyOperation.getPublicKey(readKeyFile("sumeyyeazizecengiz@gmail.com" + "_publicKey"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (PGPException e) {

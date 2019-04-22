@@ -790,7 +790,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             alreadyNotifiedUserOfEmptySubject = true;
             return;
         }
-
+        FileKey.deleteStorageFile("signatureFile","signature.asc");
         if (recipientPresenter.checkRecipientsOkForSending()) {
             return;
         }
@@ -1016,7 +1016,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             case R.id.send:
                 FileKey.createSignatureFile(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
                 checkToSendMessage();
-              //  OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
+               //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();

@@ -35,11 +35,9 @@ public class FileKey {
     public static  void createSignatureFile(String signature) {
         String mainFile="signatureFile";
         String fileName =  "signature" + ".asc";
-        java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
-        keyfile.mkdir();
-        Log.e("Dosya Yeri", String.valueOf(Environment.getExternalStorageDirectory().getAbsolutePath()));
-        File file = new File(keyfile, fileName);
-        Log.e("Dosya Yeri", String.valueOf(file));
+        java.io.File  signaturefile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
+        signaturefile.mkdir();
+        File file = new File( signaturefile, fileName);
         try {
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(signature.getBytes());
@@ -54,25 +52,17 @@ public class FileKey {
         }
     }
 
-    public void readKeyFile(String keyName) {
+    public static void deleteStorageFile(String depoyeri,String fileName){
 
-        String fileName = keyName + ".asc";
+        File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ depoyeri ); // yol belirtmeyip sadece dosya ismi belirttiğimiz zaman otomatik olarak bulunduğu klasöre göre işlem yapar.
+        f.mkdir();
+        File file = new File( f, fileName);
 
-        java.io.File file = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), fileName);
-        StringBuilder text = new StringBuilder();
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            Log.e("saved", "okundu");
-            br.close();
-        } catch (IOException e) {
-            //You'll need to add proper error handling here
+        if(!file.exists()){ // eğer dosya yoksa
+            System.out.println("Dosya bulunamadığından silinemedi");
+        }else{
+            file.delete(); // eğer dosyamız varsa.. // silme işlemi gerçekleştirir.
+            System.out.println(f.getName() +" adlı dosya başarılı bir şekilde silinmiştir.");
         }
     }
 }

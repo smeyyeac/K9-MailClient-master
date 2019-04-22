@@ -3,6 +3,7 @@ package com.fsck.k9.ui.messageview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -13,9 +14,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.fsck.k9.K9;
+import com.fsck.k9.NewClasslar.FileKey;
 import com.fsck.k9.R;
 import com.fsck.k9.helper.SizeFormatter;
 import com.fsck.k9.mailstore.AttachmentViewInfo;
+import com.fsck.k9.mailstore.MessageViewInfo;
+import com.fsck.k9.mailstore.MessageViewInfoExtractor;
+
+import static com.fsck.k9.mail.Signature.OpenPGPSignature.dogrula;
 
 
 public class AttachmentView extends FrameLayout implements OnClickListener, OnLongClickListener {
@@ -74,6 +80,15 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
         TextView attachmentName = (TextView) findViewById(R.id.attachment_name);
         attachmentName.setText(attachment.displayName);
 
+        if((attachment.displayName) != "signature.asc"){
+            onSaveButtonClick();
+            dogrulama();
+            FileKey.deleteStorageFile("Download","signature.asc");
+            FileKey.deleteStorageFile("Download",attachment.displayName);
+        }
+        else{
+            Log.e("asdgdghdjhg", attachment.displayName);
+        }
         setAttachmentSize(attachment.size);
 
         refreshThumbnail();
@@ -88,6 +103,7 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
             attachmentSize.setText(text);
         }
     }
+
 
     @Override
     public void onClick(View view) {
@@ -136,5 +152,11 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
                 .placeholder(R.drawable.attached_image_placeholder)
                 .centerCrop()
                 .into(thumbnailView);
+    }
+
+    public void dogrulama(){
+        String metin=MessageViewInfoExtractor.dogrulamaMetni();
+        Log.e("gelenmetin",metin);
+        dogrula(metin);
     }
 }
