@@ -117,7 +117,7 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
         callback.onViewAttachment(attachment);
     }
 
-    private void onSaveButtonClick() {
+    public  void onSaveButtonClick() {
         callback.onSaveAttachment(attachment);
     }
 

@@ -2,6 +2,7 @@ package com.fsck.k9.message.extractors;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.fsck.k9.helper.HtmlConverter;
 import com.fsck.k9.mail.Message;
@@ -33,7 +34,6 @@ public class MessageFulltextCreator {
         if (encryptionDetector.isEncrypted(message)) {
             return null;
         }
-
         return extractText(message);
     }
 

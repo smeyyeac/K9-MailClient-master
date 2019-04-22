@@ -22,13 +22,16 @@ import com.fsck.k9.mail.Flag;
 import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mail.Part;
+import com.fsck.k9.mail.Signature.OpenPGPSignature;
 import com.fsck.k9.mail.internet.MessageExtractor;
 import com.fsck.k9.mail.internet.Viewable;
 import com.fsck.k9.message.extractors.AttachmentInfoExtractor;
 import com.fsck.k9.ui.crypto.MessageCryptoAnnotations;
 import com.fsck.k9.ui.crypto.MessageCryptoSplitter;
 import com.fsck.k9.ui.crypto.MessageCryptoSplitter.CryptoMessageParts;
+import com.fsck.k9.ui.messageview.AttachmentView;
 
+import static com.fsck.k9.mail.Signature.OpenPGPSignature.*;
 import static com.fsck.k9.mail.internet.MimeUtility.getHeaderParameter;
 import static com.fsck.k9.mail.internet.Viewable.Alternative;
 import static com.fsck.k9.mail.internet.Viewable.Html;
@@ -49,6 +52,7 @@ public class MessageViewInfoExtractor {
     private final Context context;
     private final AttachmentInfoExtractor attachmentInfoExtractor;
     private final HtmlSanitizer htmlSanitizer;
+    private String dogrulaText;
 
 
     public static MessageViewInfoExtractor getInstance() {
@@ -195,16 +199,19 @@ public class MessageViewInfoExtractor {
                     hideDivider = false;
                 }
             }
-
+            dogrulaText=text.toString();
             String content = HtmlConverter.wrapMessageContent(html);
             String sanitizedHtml = htmlSanitizer.sanitize(content);
-
+            dogrulama();
             return new ViewableExtractedText(text.toString(), sanitizedHtml);
         } catch (Exception e) {
             throw new MessagingException("Couldn't extract viewable parts", e);
         }
     }
 
+    public void dogrulama(){
+        dogrula(dogrulaText);
+    }
     /**
      * Use the contents of a {@link com.fsck.k9.mail.internet.Viewable} to create the HTML to be displayed.
      *

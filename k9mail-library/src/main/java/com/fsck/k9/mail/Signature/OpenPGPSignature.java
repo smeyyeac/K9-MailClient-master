@@ -161,11 +161,36 @@ public class OpenPGPSignature {
         Log.e("dfgddb", text.toString());
         return text.toString();
     }
+    public static String readSignatureFile(String Name) {
 
+        String mainFile="Download";
+        String fileName = Name + ".asc";
+        java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
+        keyfile.mkdir();
+        File file = new File(keyfile, fileName);
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            Log.e("saved", "okundu");
+            br.close();
+        } catch (IOException e) {
+            Log.e("hata",e.toString());
+            //You'll need to add proper error handling here
+        }
+        Log.e("dfgddb", text.toString());
+        return text.toString();
+    }
     public static void dogrula(String mej){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        String imzalanmis=readSignatureFile("signature");
         InputStream mesajj = new ByteArrayInputStream(mej.getBytes());
-        InputStream sign = new ByteArrayInputStream(imza.getBytes());
+        InputStream sign = new ByteArrayInputStream(imzalanmis.getBytes());
 
         PGPPublicKey keys = null;
         try {

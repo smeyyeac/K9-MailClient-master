@@ -44,12 +44,11 @@ public class KeyResultActivity extends K9Activity implements View.OnClickListene
         Log.e("RESULT", address);
 
         editPublicKey.setText(String.valueOf(keyServer.getKeyServerPublicKey(address)));
-        file.createKeyFile(publicKeyName, String.valueOf(keyServer.getKeyServerPublicKey(address)),"mail");
 
     }
 
     public void onClick(View v) { //anahtar oluşturma
-
+Log.d("resultda","resultda");
         file.createKeyFile(publicKeyName, String.valueOf(keyServer.getKeyServerPublicKey(address)),"mail");
         Toast.makeText(KeyResultActivity.this,  "İndirildi", Toast.LENGTH_LONG).show();
     }

@@ -1,6 +1,5 @@
 package com.fsck.k9.mail.internet;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -43,13 +42,14 @@ public class MessageExtractor {
         return getTextFromPart(part, NO_TEXT_SIZE_LIMIT);
     }
 
-    public static String getTextFromPart(Part part, long textSizeLimit) {
+    public static String getTextFromPart (Part part, long textSizeLimit) {
         try {
             if ((part != null) && (part.getBody() != null)) {
                 final Body body = part.getBody();
                 if (body instanceof TextBody) {
                     return ((TextBody) body).getRawText();
                 }
+
                 final String mimeType = part.getMimeType();
                 if (mimeType != null && MimeUtility.mimeTypeMatches(mimeType, "text/*") ||
                         part.isMimeType("application/pgp")) {
@@ -135,7 +135,7 @@ public class MessageExtractor {
 
     /** Traverse the MIME tree of a message an extract viewable parts. */
     public static void findViewablesAndAttachments(Part part,
-                @Nullable List<Viewable> outputViewableParts, @Nullable List<Part> outputNonViewableParts)
+                                                   @Nullable List<Viewable> outputViewableParts, @Nullable List<Part> outputNonViewableParts)
             throws MessagingException {
         boolean skipSavingNonViewableParts = outputNonViewableParts == null;
         boolean skipSavingViewableParts = outputViewableParts == null;
@@ -326,7 +326,7 @@ public class MessageExtractor {
      * @throws MessagingException In case of an error.
      */
     private static List<Viewable> findHtmlPart(Multipart multipart, Set<Part> knownTextParts,
-            @Nullable List<Part> outputNonViewableParts, boolean directChild) throws MessagingException {
+                                               @Nullable List<Part> outputNonViewableParts, boolean directChild) throws MessagingException {
         boolean saveNonViewableParts = outputNonViewableParts != null;
         List<Viewable> viewables = new ArrayList<>();
 
@@ -389,7 +389,7 @@ public class MessageExtractor {
      *         A list that will receive the parts that are considered attachments.
      */
     private static void findAttachments(Multipart multipart, Set<Part> knownTextParts,
-            @NonNull List<Part> attachments) {
+                                        @NonNull List<Part> attachments) {
         for (Part part : multipart.getBodyParts()) {
             Body body = part.getBody();
             if (body instanceof Multipart) {
@@ -466,3 +466,13 @@ public class MessageExtractor {
         return null;
     }
 }
+
+
+
+
+
+
+
+
+
+

@@ -767,7 +767,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 .setMessageFormat(mMessageFormat)
                 .setText(mMessageContentView.getCharacters())
                 .setAttachments(attachmentPresenter.createAttachmentList())
-                .setSignature(mSignatureView.getCharacters())
+                .setSignature("") //mSignatureView.getCharacters()
                 .setSignatureBeforeQuotedText(mAccount.isSignatureBeforeQuotedText())
                 .setIdentityChanged(mIdentityChanged)
                 .setSignatureChanged(mSignatureChanged)
@@ -778,7 +778,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
 
         quotedMessagePresenter.builderSetProperties(builder);
         Log.e("createeeeee","creste");
-        Log.e("createeeeee",mMessageContentView.getCharacters());
        // builder.setText(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
        // Log.e("createeeeee",OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
         return builder;
@@ -1017,8 +1016,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             case R.id.send:
                 FileKey.createSignatureFile(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
                 checkToSendMessage();
-               // OpenPGPSignature.imzalama( mMessageContentView.getCharacters());
-                //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
+              //  OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();
@@ -1803,7 +1801,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         intentdosya.setType("*/*"); /* This example is sharing jpeg images. */
 
         ArrayList<Uri> files = new ArrayList<Uri>();
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/keyFile/_imza_imza.asc");
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/signatureFile/signature.asc");
         Uri uri = Uri.fromFile(file);
         files.add(uri);
         attachmentPresenter.addAttachment(uri,"/*/" );
