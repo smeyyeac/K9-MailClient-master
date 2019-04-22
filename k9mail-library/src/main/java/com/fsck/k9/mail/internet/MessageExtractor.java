@@ -23,6 +23,7 @@ import com.fsck.k9.mail.Part;
 import org.apache.commons.io.input.BoundedInputStream;
 
 import static com.fsck.k9.mail.K9MailLib.LOG_TAG;
+
 import static com.fsck.k9.mail.internet.CharsetSupport.fixupCharset;
 import static com.fsck.k9.mail.internet.MimeUtility.getHeaderParameter;
 import static com.fsck.k9.mail.internet.MimeUtility.isSameMimeType;
@@ -64,6 +65,7 @@ public class MessageExtractor {
         } catch (MessagingException e) {
             Log.e(LOG_TAG, "Unable to getTextFromPart", e);
         }
+
         return null;
     }
 

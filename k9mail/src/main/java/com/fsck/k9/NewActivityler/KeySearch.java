@@ -1,4 +1,4 @@
-package com.fsck.k9;
+package com.fsck.k9.NewActivityler;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.fsck.k9.NewClasslar.KeyServer;
+import com.fsck.k9.R;
 import com.fsck.k9.activity.K9Activity;
 
 import java.util.ArrayList;

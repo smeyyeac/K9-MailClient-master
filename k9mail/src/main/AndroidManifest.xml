@@ -262,22 +262,22 @@
                 android:resource="@xml/searchable"/>
         </activity>
         <activity
-            android:name=".activity.KeyCreation"
+            android:name=".NewActivityler.KeyCreation"
             android:configChanges="locale"
             android:label="@string/anahtar_olustur"
             />
         <activity
-            android:name=".SelectedKeyActivity"
+            android:name=".NewActivityler.SelectedKeyActivity"
             android:configChanges="locale"
             android:label="@string/secili_anah"
             />
         <activity
-            android:name=".KeySearch"
+            android:name=".NewActivityler.KeySearch"
             android:configChanges="locale"
             android:label="@string/anahtar_ara"
             />
         <activity
-            android:name=".KeyResultActivity"
+            android:name=".NewActivityler.KeyResultActivity"
             android:configChanges="locale"
             android:label="@string/anahtar_indir"
             />

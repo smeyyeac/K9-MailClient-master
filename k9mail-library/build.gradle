@@ -21,6 +21,24 @@ dependencies {
     compile 'com.beetstra.jutf7:jutf7:1.0.0'
     compile "com.android.support:support-annotations:${androidSupportLibraryVersion}"
 
+    //ben ekledim
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    //implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'name.neuhalfen.projects.crypto.bouncycastle.openpgp:bouncy-gpg:2.0.+'
+    implementation 'org.assertj:assertj-core:2.9.1'
+    implementation 'com.google.guava:guava:18.0'
+
+    implementation 'net.sf.jtidy:jtidy:r938'
+    implementation 'org.jsoup:jsoup:1.11.3'
+
+    compile 'org.bouncycastle:bcprov-jdk15on:1.60'
+    compile 'org.bouncycastle:bcpg-jdk15on:1.60'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1' //bitis
+
+
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.madgag.spongycastle:pg:1.51.0.0'
 
@@ -28,6 +46,7 @@ dependencies {
     testCompile "org.robolectric:robolectric:${robolectricVersion}"
     testCompile "junit:junit:${junitVersion}"
     testCompile "org.mockito:mockito-core:${mockitoVersion}"
+
 }
 
 android {

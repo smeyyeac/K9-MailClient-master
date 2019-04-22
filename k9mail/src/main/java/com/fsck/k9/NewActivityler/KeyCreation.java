@@ -1,10 +1,9 @@
-package com.fsck.k9.activity;
+package com.fsck.k9.NewActivityler;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.icu.text.StringPrepParseException;
 import android.os.Bundle;
 //import android.support.v7.app.AppCompatActivity;
 
@@ -15,28 +14,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.fsck.k9.OpenPGP;
-import com.fsck.k9.FileKey;
+import com.fsck.k9.NewClasslar.OpenPGP;
+import com.fsck.k9.NewClasslar.FileKey;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.K9Activity;
 
-import android.view.LayoutInflater;
 //import android.support.annotation.RequiresApi;
 
 import org.bouncycastle.openpgp.PGPException;
-import org.slf4j.LoggerFactory;
-import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
 
 //import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
-import java.security.SignatureException;
-import java.util.logging.Logger;
 
 //@RequiresApi(api = Build.VERSION_CODES.O)
 public class KeyCreation extends K9Activity implements View.OnClickListener{

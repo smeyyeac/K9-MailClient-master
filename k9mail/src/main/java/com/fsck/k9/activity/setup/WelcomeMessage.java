@@ -6,15 +6,11 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.fsck.k9.KeySearch;
-import com.fsck.k9.KeyServer;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.Accounts;
 import com.fsck.k9.activity.K9Activity;
-import com.fsck.k9.activity.KeyCreation;
 import com.fsck.k9.helper.HtmlConverter;
 
 /**

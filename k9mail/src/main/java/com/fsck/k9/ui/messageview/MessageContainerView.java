@@ -12,6 +12,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -417,7 +418,9 @@ public class MessageContainerView extends LinearLayout implements OnLayoutChange
             unsignedTextContainer.setVisibility(View.VISIBLE);
             unsignedTextDivider.setVisibility(hideUnsignedTextDivider ? View.GONE : View.VISIBLE);
             unsignedText.setText(messageViewInfo.extraText);
+
         }
+
     }
 
     public boolean hasHiddenExternalImages() {

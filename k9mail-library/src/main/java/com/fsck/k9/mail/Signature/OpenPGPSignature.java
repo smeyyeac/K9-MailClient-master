@@ -1,7 +1,11 @@
-package com.fsck.k9;
+package com.fsck.k9.mail.Signature;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
+
+import com.fsck.k9.mail.Key.KeyOperation;
 
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.bcpg.BCPGOutputStream;
@@ -34,10 +38,11 @@ interface StreamHandler {
 }
 
 public class OpenPGPSignature {
-   private static  PGPPrivateKey pKey = null;
-   private static  String imza = null;
+    private static  PGPPrivateKey pKey = null;
+    private static  String imza = null;
 
-   public static String signArmoredAscii(PGPPrivateKey privateKey, String data, int signatureAlgo) throws IOException, PGPException {
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static String signArmoredAscii(PGPPrivateKey privateKey, String data, int signatureAlgo) throws IOException, PGPException {
         String signature = null;
         final PGPSignatureGenerator signatureGenerator = new PGPSignatureGenerator(new BcPGPContentSignerBuilder(privateKey.getPublicKeyPacket().getAlgorithm(), signatureAlgo));
         signatureGenerator.init(org.bouncycastle.openpgp.PGPSignature.BINARY_DOCUMENT, privateKey);
@@ -87,7 +92,10 @@ public class OpenPGPSignature {
     }
 
     static void processStringAsStream(String data, StreamHandler handler) throws IOException {
-        InputStream is = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8.name()));
+        InputStream is = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            is = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8.name()));
+        }
         processStream(is, handler);
     }
 
@@ -161,7 +169,7 @@ public class OpenPGPSignature {
 
         PGPPublicKey keys = null;
         try {
-            keys = KeyOperation.getPublicKey(readKeyFile("as" + "_publicKey"));
+            keys = (PGPPublicKey) KeyOperation.getPublicKey(readKeyFile("as" + "_publicKey"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (PGPException e) {

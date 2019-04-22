@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.StringRes;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,7 +113,11 @@ public class MessageTopView extends LinearLayout {
 
         MessageContainerView view = (MessageContainerView) mInflater.inflate(R.layout.message_container,
                 containerView, false);
-        containerView.addView(view);
+       containerView.addView(view);
+
+        if (getViewHierarcy(containerView)==null) {
+            Log.w("messagetopview","nullandık");
+        }
 
         boolean hideUnsignedTextDivider = !account.getCryptoSupportSignOnly();
         view.displayMessageViewContainer(messageViewInfo, new OnRenderingFinishedListener() {
@@ -125,6 +130,8 @@ public class MessageTopView extends LinearLayout {
         if (view.hasHiddenExternalImages()) {
             showShowPicturesButton();
         }
+       // Log.e("salakkkkk", String.valueOf(containerView.getChildAt(-1).getContext()));
+
     }
 
     public void showMessageCryptoWarning(final MessageViewInfo messageViewInfo, Drawable providerIcon,
@@ -153,7 +160,47 @@ public class MessageTopView extends LinearLayout {
         setCryptoProviderIcon(providerIcon, view);
 
         containerView.addView(view);
+
         displayViewOnLoadFinished(false);
+    }
+
+
+    public static String getViewHierarcy(ViewGroup v) {
+        StringBuffer buf = new StringBuffer();
+        printViews(v, buf, 0);
+        Log.w("lunnnnnnn",buf.toString());
+        return buf.toString();
+    }
+    private static String printViews(ViewGroup v, StringBuffer buf, int level) {
+        final int childCount = v.getChildCount();
+        v.getId();
+
+        indent(buf, level);
+        buf.append(v.getClass().getName());
+        buf.append(" children:");
+        buf.append(childCount);
+        buf.append("  id:"+v.getId());
+        buf.append("\n");
+
+        for (int i = 0; i < childCount; i++) {
+            View child = v.getChildAt(i);
+            if ((child instanceof ViewGroup)) {
+                printViews((ViewGroup) child, buf, level+1);
+            } else {
+                indent(buf, level+1);
+                buf.append(child.getClass().getName());
+                buf.append(child.getClass().getName().getBytes());
+                buf.append("  id:"+child.getId());
+                buf.append("\n");
+            }
+        }
+        return buf.toString();
+    }
+
+    private static void indent(StringBuffer buf, int level) {
+        for (int i = 0; i < level; i++) {
+            buf.append("  ");
+        }
     }
 
     public void showMessageCryptoErrorView(MessageViewInfo messageViewInfo, Drawable providerIcon) {

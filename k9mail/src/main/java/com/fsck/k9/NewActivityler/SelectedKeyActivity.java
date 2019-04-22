@@ -1,4 +1,4 @@
-package com.fsck.k9;
+package com.fsck.k9.NewActivityler;
 
 import android.Manifest;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.fsck.k9.R;
 import com.fsck.k9.activity.K9Activity;
 import com.fsck.k9.activity.compose.AttachmentPresenter;
 

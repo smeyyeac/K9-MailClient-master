@@ -1,4 +1,4 @@
-package com.fsck.k9;
+package com.fsck.k9.NewClasslar;
 
 import android.os.Environment;
 import android.util.Log;
