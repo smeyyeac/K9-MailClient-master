@@ -53,6 +53,25 @@ public class FileKey {
             Log.e("Use Storage.", "Fail");
         }
     }
+    public static  void createEncryptedFile(String signature) {
+        String mainFile="encryptedFile";
+        String fileName =  "encrypted" + ".asc";
+        java.io.File  signaturefile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
+        signaturefile.mkdir();
+        File file = new File( signaturefile, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(signature.getBytes());
+            fos.close();
+            Log.e("Saved", "Create");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e("Fail", e.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Use Storage.", "Fail");
+        }
+    }
 
     public static void deleteStorageFile(String depoyeri,String fileName){
 

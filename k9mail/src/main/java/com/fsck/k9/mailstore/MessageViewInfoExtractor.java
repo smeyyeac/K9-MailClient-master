@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.fsck.k9.Globals;
 import com.fsck.k9.K9;
@@ -53,7 +54,7 @@ public class MessageViewInfoExtractor {
     private final Context context;
     private final AttachmentInfoExtractor attachmentInfoExtractor;
     private final HtmlSanitizer htmlSanitizer;
-    private String messageTo;
+    private static String messageTo;
     private static String messageFrom;
     private static String dogrulaText;
 
@@ -212,6 +213,7 @@ public class MessageViewInfoExtractor {
             String content = HtmlConverter.wrapMessageContent(html);
             String sanitizedHtml = htmlSanitizer.sanitize(content);
            // dogrulama(dogrulaText, messageFrom);
+            //Toast.makeText(context.getApplicationContext(),  Toast.LENGTH_SHORT ).show();
             return new ViewableExtractedText(text.toString(), sanitizedHtml);
         } catch (Exception e) {
             throw new MessagingException("Couldn't extract viewable parts", e);
@@ -223,6 +225,14 @@ public class MessageViewInfoExtractor {
     public static String dogrulamaFrom() {
         return (messageFrom);
     }
+
+    public static String decryptTo() {
+        return (messageTo);
+    }
+
+
+
+
     public void dogrulama(String dogrulaText, String messageFrom){
         dogrula(dogrulaText, messageFrom);
     }

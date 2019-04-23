@@ -260,7 +260,7 @@ public class Settings {
      *   <li>
      *   The one that is used by the internal preference {@link Storage}. It is usually obtained by
      *   calling {@code toString()} on the internal representation of the setting value (see e.g.
-     *   {@link K9#save(android.content.SharedPreferences.Editor)}).
+     *   ).
      *   </li>
      *   <li>
      *   The "pretty" version that is used by the import/export settings file (e.g. colors are

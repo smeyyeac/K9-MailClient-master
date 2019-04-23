@@ -15,13 +15,18 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.fsck.k9.K9;
 import com.fsck.k9.NewClasslar.FileKey;
+import com.fsck.k9.NewClasslar.OpenPGP;
 import com.fsck.k9.R;
 import com.fsck.k9.helper.SizeFormatter;
+import com.fsck.k9.mail.Key.KeyOperation;
+import com.fsck.k9.mail.OpenPGP.OpenPGPEncryptDecrypt;
+import com.fsck.k9.mail.Signature.OpenPGPSignature;
 import com.fsck.k9.mailstore.AttachmentViewInfo;
 import com.fsck.k9.mailstore.MessageViewInfo;
 import com.fsck.k9.mailstore.MessageViewInfoExtractor;
 
 import static com.fsck.k9.mail.Signature.OpenPGPSignature.dogrula;
+
 
 
 public class AttachmentView extends FrameLayout implements OnClickListener, OnLongClickListener {
@@ -30,6 +35,9 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
 
     private Button viewButton;
     private Button downloadButton;
+    private static String messageTo;
+    private static String encryptedMessage = "";
+    private static String decryptedMessage = "";
 
 
     public AttachmentView(Context context, AttributeSet attrs, int defStyle) {
@@ -77,17 +85,27 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
         downloadButton.setOnClickListener(this);
         downloadButton.setOnLongClickListener(this);
 
+
+
         TextView attachmentName = (TextView) findViewById(R.id.attachment_name);
         attachmentName.setText(attachment.displayName);
-
-        if((attachment.displayName) != "signature.asc"){
+        Log.w("Getir attaclar", attachment.displayName);
+        if(attachment.displayName.equals("signature.asc")){
             onSaveButtonClick();
             dogrulama();
-            FileKey.deleteStorageFile("Download",attachment.displayName);
             FileKey.deleteStorageFile("Download","signature.asc");
+        }else if(attachment.displayName.equals("encrypted.asc")){
+            onSaveButtonClick();
+            messageTo = MessageViewInfoExtractor.decryptTo();
+            encryptedMessage = OpenPGPEncryptDecrypt.readDownloadFile("encrypted");
+            Log.e("Getir encrypt", encryptedMessage );
+            decryptedMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, encryptedMessage);
+            Log.e("Getir decrypt", decryptedMessage );
+            FileKey.deleteStorageFile("Download","encrypted.asc");
+
         }
         else{
-            Log.e("asdgdghdjhg", attachment.displayName);
+            Log.e("Getir attachmentElse", attachment.displayName);
         }
         setAttachmentSize(attachment.size);
 
@@ -158,6 +176,6 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
         String metin = MessageViewInfoExtractor.dogrulamaMetni();
         String mFrom = MessageViewInfoExtractor.dogrulamaFrom();
         Log.e("gelenmetin",metin);
-        dogrula(metin, mFrom);
+        OpenPGPSignature.dogrula(metin, mFrom);
     }
 }

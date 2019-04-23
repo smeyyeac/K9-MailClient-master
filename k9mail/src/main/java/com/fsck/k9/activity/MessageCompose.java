@@ -87,6 +87,7 @@ import com.fsck.k9.mail.Flag;
 import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.Message.RecipientType;
 import com.fsck.k9.mail.MessagingException;
+import com.fsck.k9.mail.OpenPGP.OpenPGPEncryptDecrypt;
 import com.fsck.k9.mail.Signature.OpenPGPSignature;
 import com.fsck.k9.mail.internet.MimeMessage;
 import com.fsck.k9.mailstore.LocalMessage;
@@ -987,12 +988,13 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void updateSignature() {
-        if (mIdentity.getSignatureUse()) {
+        mSignatureView.setCharacters(" ");
+        /*if (mIdentity.getSignatureUse()) {
             mSignatureView.setCharacters(mIdentity.getSignature());
             mSignatureView.setVisibility(View.VISIBLE);
         } else {
             mSignatureView.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     @Override
@@ -1017,16 +1019,24 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         switch (item.getItemId()) {
             case R.id.send:
                 if(aktiflikimza==true) {
-                   FileKey.createSignatureFile(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
-                    addFile();
+                   FileKey.createSignatureFile(OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters()));
+                    addSignatureFile();
                     checkToSendMessage();
                     //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
                     break;
+                }
+                else if (aktifliksifre==true) {
+                    //String messageFrom = Address.unpack(recipientPresenter.getToAddresses()).toLowerCase();
+                    FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted("saruhanur@gmail.com", mMessageContentView.getCharacters()));
+                    addEncryptedFile();
+                    checkToSendMessage();
+                break;
                 }
                 else{
                     checkToSendMessage();
                     break;
                 }
+
             case R.id.save:
                 checkToSaveDraftAndSave();
                 break;
@@ -1845,7 +1855,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     getString(R.string.message_compose_attachments_skipped_toast), Toast.LENGTH_LONG).show();
         }
     };
-    public void addFile(){
+    public void addSignatureFile(){
         Intent intentdosya = new Intent();
         intentdosya.setAction(Intent.ACTION_SEND_MULTIPLE);
         intentdosya.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
@@ -1856,6 +1866,19 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         Uri uri = Uri.fromFile(file);
         files.add(uri);
         attachmentPresenter.addAttachment(uri,"application/pgp-signature" );
+        intentdosya.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+    }
+    public void addEncryptedFile(){
+        Intent intentdosya = new Intent();
+        intentdosya.setAction(Intent.ACTION_SEND_MULTIPLE);
+        intentdosya.putExtra(Intent.EXTRA_SUBJECT, "Here are some files.");
+        intentdosya.setType("*/*"); /* This example is sharing jpeg images. */
+
+        ArrayList<Uri> files = new ArrayList<Uri>();
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/encryptedFile/encrypted.asc");
+        Uri uri = Uri.fromFile(file);
+        files.add(uri);
+        attachmentPresenter.addAttachment(uri,"application/pgp-encrypted" );
         intentdosya.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
     }
 

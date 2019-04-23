@@ -137,10 +137,10 @@ public class OpenPGPSignature {
             Log.e("ikinci",e.toString());
         }
 
-        return parola;
+        return imza;
     }
 
-    public static String readSignatureFile(String Name) {
+    public static String readDownloadFile(String Name) {
 
         String mainFile="Download";
         String fileName = Name + ".asc";
@@ -166,13 +166,13 @@ public class OpenPGPSignature {
     }
     public static void dogrula(String message, String mFrom){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        String imzalanmis = readSignatureFile("signature");
+        String imzalanmis = readDownloadFile("signature");
         InputStream mesajj = new ByteArrayInputStream(message.getBytes());
         InputStream sign = new ByteArrayInputStream(imzalanmis.getBytes());
 
         PGPPublicKey keys = null;
         try {
-            keys = (PGPPublicKey) getPublicKey(readKeyFile(mFrom + "_publicKey"));
+            keys = (PGPPublicKey) KeyOperation.getPublicKey(readKeyFile(mFrom + "_publicKey"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -204,22 +204,5 @@ public class OpenPGPSignature {
         }
         Log.e("dfgddb", text.toString());
         return text.toString();
-    }
-    public static PGPPublicKey getPublicKey(String publicKeyData) throws IOException, PGPException {
-        Log.e("Getir key", publicKeyData);
-        PGPPrivateKey privKey = null;
-        PGPPublicKeyRing pubKeyRing = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            pubKeyRing = new PGPPublicKeyRing(
-                    new ArmoredInputStream(new ByteArrayInputStream(publicKeyData.getBytes(StandardCharsets.UTF_8))),
-                    new BcKeyFingerprintCalculator()
-            );
-        }
-        if (Iterators.size(pubKeyRing.getPublicKeys()) < 1) {
-            Log.e("hataaaaaaaa","No keys in keyring");
-        }
-
-        PGPPublicKey signingKey = pubKeyRing.getPublicKey();
-        return signingKey;
     }
 }

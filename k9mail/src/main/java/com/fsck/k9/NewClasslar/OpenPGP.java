@@ -117,7 +117,7 @@ public class OpenPGP {
     }
 
     private PGPKeyPair signingKeyPair(RSAKeyPairGenerator rsaKeyPairGenerator, Date date) throws PGPException {
-        return new BcPGPKeyPair(PGPPublicKey.RSA_SIGN, rsaKeyPairGenerator.generateKeyPair(), date);
+        return new BcPGPKeyPair(PGPPublicKey.RSA_GENERAL, rsaKeyPairGenerator.generateKeyPair(), date);
     }
 
     private PGPSignatureSubpacketVector encryptionKeySignature() {
