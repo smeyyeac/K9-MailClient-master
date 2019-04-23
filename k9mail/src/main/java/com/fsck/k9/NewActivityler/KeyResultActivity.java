@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fsck.k9.NewClasslar.FileKey;
@@ -28,10 +29,10 @@ public class KeyResultActivity extends K9Activity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.key_result_activiy);
 
-        final EditText editPublicKey = (EditText) findViewById(R.id.editPublicKey);
-        btnPublicKeyDownland = (Button) findViewById(R.id.btnDownload);
+        final TextView editPublicKey = (TextView) findViewById(R.id.textPublicKey);
+        btnPublicKeyDownland = (Button) findViewById(R.id.downloadkey);
 
-        findViewById(R.id.btnDownload).setOnClickListener(this);
+        findViewById(R.id.downloadkey).setOnClickListener(this);
 
         final OpenPGP pgp = new OpenPGP(SECURE_RANDOM);
 
@@ -39,6 +40,8 @@ public class KeyResultActivity extends K9Activity implements View.OnClickListene
         publicKeyName = extras.getString("fileName");
         address = extras.getString("sendAddress");
 
+        Log.e("fileName",publicKeyName);
+        Log.e("adresss", address);
         Log.e("KeyServerResult", String.valueOf(keyServer.getKeyServerPublicKey(address)));
 
         Log.e("RESULT", address);

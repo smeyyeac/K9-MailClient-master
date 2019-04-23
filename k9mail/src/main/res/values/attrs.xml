@@ -18,6 +18,7 @@
         <attr name="iconActionSearch" format="reference" />
         <attr name="iconActionSearchFolder" format="reference" />
         <attr name="iconActionSend" format="reference" />
+        <attr name="iconActionSignature" format="reference" />
         <attr name="iconActionSettings" format="reference" />
         <attr name="iconActionSingleMessageOptions" format="reference" />
         <attr name="iconActionSort" format="reference" />

@@ -156,7 +156,6 @@ public class OpenPGPSignature {
                 text.append(line);
                 text.append('\n');
             }
-            Log.e("saved", "okundu");
             br.close();
         } catch (IOException e) {
             Log.e("hata",e.toString());
@@ -198,7 +197,6 @@ public class OpenPGPSignature {
                 text.append(line);
                 text.append('\n');
             }
-            Log.e("saved", "okundu");
             br.close();
         } catch (IOException e) {
             Log.e("hata",e.toString());

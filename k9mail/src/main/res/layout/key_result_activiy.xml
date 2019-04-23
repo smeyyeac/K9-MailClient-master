@@ -4,13 +4,13 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/downloadkey"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Anahtar indir" />
 
-    <EditText
-        android:id="@+id/editPublicKey"
+    <TextView
+        android:id="@+id/textPublicKey"
         android:layout_width="382dp"
         android:layout_height="404dp"
         android:layout_marginStart="8dp"
@@ -21,13 +21,4 @@
         android:selectAllOnFocus="false"
         android:singleLine="false" />
 
-    <Button
-        android:id="@+id/btnDownload"
-        android:layout_width="wrap_content"
-        android:layout_height="52dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Downland" />
 </LinearLayout>
