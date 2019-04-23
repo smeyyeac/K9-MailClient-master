@@ -11,7 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileKey {
-    public void createKeyFile(String keyName, String key, String mail) {
+    public static void createKeyFile(String keyName, String key, String mail) {
         String mainFile="keyFile";
         String fileName = mail + "_" + keyName + ".asc";
         java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
@@ -32,6 +32,8 @@ public class FileKey {
             Log.e("Use Storage.", "Fail");
         }
     }
+
+
     public static  void createSignatureFile(String signature) {
         String mainFile="signatureFile";
         String fileName =  "signature" + ".asc";
@@ -54,7 +56,7 @@ public class FileKey {
 
     public static void deleteStorageFile(String depoyeri,String fileName){
 
-        File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ depoyeri ); // yol belirtmeyip sadece dosya ismi belirttiğimiz zaman otomatik olarak bulunduğu klasöre göre işlem yapar.
+        File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"\n"+ depoyeri ); // yol belirtmeyip sadece dosya ismi belirttiğimiz zaman otomatik olarak bulunduğu klasöre göre işlem yapar.
         f.mkdir();
         File file = new File( f, fileName);
 

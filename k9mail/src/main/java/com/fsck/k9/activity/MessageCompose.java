@@ -1014,9 +1014,13 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.send:
-                FileKey.createSignatureFile(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
+                Log.e("Getir AccountMail", mAccount.getEmail().toLowerCase());
+                String email = mAccount.getEmail().toLowerCase();
+                FileKey.createSignatureFile(OpenPGPSignature.imzalama(email, mMessageContentView.getCharacters()));
+                Log.w(" getir create",mMessageContentView.getCharacters());
+
                 checkToSendMessage();
-               //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
+              //  OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
                 break;
             case R.id.save:
                 checkToSaveDraftAndSave();

@@ -327,7 +327,7 @@ public class Address implements Serializable {
      * @return
      */
     @VisibleForTesting
-    static String quoteString(String s) {
+    public static String quoteString(String s) {
         if (s == null) {
             return null;
         }

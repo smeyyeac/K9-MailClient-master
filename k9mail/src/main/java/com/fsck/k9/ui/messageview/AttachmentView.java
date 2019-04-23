@@ -155,8 +155,9 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
     }
 
     public void dogrulama(){
-        String metin=MessageViewInfoExtractor.dogrulamaMetni();
+        String metin = MessageViewInfoExtractor.dogrulamaMetni();
+        String mFrom = MessageViewInfoExtractor.dogrulamaFrom();
         Log.e("gelenmetin",metin);
-        dogrula(metin);
+        dogrula(metin, mFrom);
     }
 }

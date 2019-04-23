@@ -2,6 +2,7 @@ package com.fsck.k9.message.extractors;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.fsck.k9.helper.HtmlConverter;
 import com.fsck.k9.mail.Part;
@@ -18,6 +19,7 @@ class PreviewTextExtractor {
     @NonNull
     public String extractPreview(@NonNull Part textPart) throws PreviewExtractionException {
         String text = MessageExtractor.getTextFromPart(textPart, MAX_CHARACTERS_CHECKED_FOR_PREVIEW);
+        Log.w("GetirPreviewTextExtrac", text);
         if (text == null) {
             throw new PreviewExtractionException("Couldn't get text from part");
         }

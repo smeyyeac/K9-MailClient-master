@@ -15,10 +15,13 @@ import android.util.Log;
 
 import com.fsck.k9.mail.Body;
 import com.fsck.k9.mail.BodyPart;
+import com.fsck.k9.mail.Key.KeyOperation;
 import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mail.Multipart;
 import com.fsck.k9.mail.Part;
+import com.fsck.k9.mail.Signature.OpenPGPSignature;
+
 import org.apache.commons.io.input.BoundedInputStream;
 
 import static com.fsck.k9.mail.K9MailLib.LOG_TAG;
@@ -53,6 +56,10 @@ public class MessageExtractor {
                 final String mimeType = part.getMimeType();
                 if (mimeType != null && MimeUtility.mimeTypeMatches(mimeType, "text/*") ||
                         part.isMimeType("application/pgp")) {
+
+
+                    Log.w("Getir MessageExractor", getTextFromTextPart(part, body, mimeType, textSizeLimit));
+
                     return getTextFromTextPart(part, body, mimeType, textSizeLimit);
                 } else {
                     throw new MessagingException("Provided non-text part: " + mimeType);

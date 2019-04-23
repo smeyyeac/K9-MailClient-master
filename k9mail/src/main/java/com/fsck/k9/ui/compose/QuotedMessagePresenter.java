@@ -246,6 +246,7 @@ public class QuotedMessagePresenter {
             if (part != null) { // Shouldn't happen if we were the one who saved it.
                 quotedTextFormat = SimpleMessageFormat.HTML;
                 String text = MessageExtractor.getTextFromPart(part);
+                Log.w("GetirQuatedMesPresneter", text);
                 if (K9.DEBUG) {
                     Log.d(K9.LOG_TAG, "Loading message with offset " + bodyOffset + ", length " + bodyLength +
                             ". Text length is " + text.length() + ".");

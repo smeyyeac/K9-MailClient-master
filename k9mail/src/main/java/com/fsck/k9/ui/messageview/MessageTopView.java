@@ -255,6 +255,13 @@ public class MessageTopView extends LinearLayout {
     }
 
     public void setHeaders(final Message message, Account account) {
+
+        Log.w("Getir MtvSetHeader mid", message.getMessageId());
+        Log.w("Getir MtvSetHeader mail",account.getEmail());
+        Log.w("Getir MtvSetHeader konu",message.getSubject());
+        Log.w("Getir MtvSetHeader to", Address.pack(message.getRecipients(Message.RecipientType.TO)));
+        Log.w("Getir MtvSetHeader from",Address.pack(message.getFrom()));
+
         mHeaderContainer.populate(message, account);
         mHeaderContainer.setVisibility(View.VISIBLE);
     }

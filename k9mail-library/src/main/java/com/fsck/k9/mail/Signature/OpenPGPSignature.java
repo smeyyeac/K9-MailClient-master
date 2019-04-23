@@ -6,18 +6,22 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.fsck.k9.mail.Key.KeyOperation;
+import com.google.common.collect.Iterators;
 
+import org.bouncycastle.bcpg.ArmoredInputStream;
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.bcpg.BCPGOutputStream;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPrivateKey;
 import org.bouncycastle.openpgp.PGPPublicKey;
+import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSignatureGenerator;
 import org.bouncycastle.openpgp.PGPSignatureList;
 import org.bouncycastle.openpgp.PGPUtil;
 import org.bouncycastle.openpgp.jcajce.JcaPGPObjectFactory;
 import org.bouncycastle.openpgp.operator.PBESecretKeyDecryptor;
+import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 import org.bouncycastle.openpgp.operator.bc.BcPGPContentSignerBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPDigestCalculatorProviderBuilder;
@@ -99,12 +103,12 @@ public class OpenPGPSignature {
         processStream(is, handler);
     }
 
-    public  static String imzalama(String imzalanacak){
+    public  static String imzalama(String email, String imzalanacak){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         PGPSecretKey keys = null;
 
         try {
-            keys = KeyOperation.getPrivateSecretKey(readKeyFile("sumeyyeazizecengiz@gmail.com" + "_privateKey"));
+            keys = KeyOperation.getPrivateSecretKey(readKeyFile(email + "_privateKey"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (PGPException e) {
@@ -116,6 +120,7 @@ public class OpenPGPSignature {
         try {
             PBESecretKeyDecryptor b = new JcePBESecretKeyDecryptorBuilder(new JcaPGPDigestCalculatorProviderBuilder().setProvider("BC").build()).setProvider("BC").build(charParola);
             pKey = keys.extractPrivateKey(b);
+
         } catch (PGPException e) {
             e.printStackTrace();
         }
@@ -133,6 +138,49 @@ public class OpenPGPSignature {
         }
 
         return parola;
+    }
+
+    public static String readSignatureFile(String Name) {
+
+        String mainFile="Download";
+        String fileName = Name + ".asc";
+        java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
+        keyfile.mkdir();
+        File file = new File(keyfile, fileName);
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            Log.e("saved", "okundu");
+            br.close();
+        } catch (IOException e) {
+            Log.e("hata",e.toString());
+            //You'll need to add proper error handling here
+        }
+        Log.e("dfgddb", text.toString());
+        return text.toString();
+    }
+    public static void dogrula(String message, String mFrom){
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        String imzalanmis = readSignatureFile("signature");
+        InputStream mesajj = new ByteArrayInputStream(message.getBytes());
+        InputStream sign = new ByteArrayInputStream(imzalanmis.getBytes());
+
+        PGPPublicKey keys = null;
+        try {
+            keys = (PGPPublicKey) getPublicKey(readKeyFile(mFrom + "_publicKey"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (PGPException e) {
+            e.printStackTrace();
+        }
+        Log.e("getir dogrula", String.valueOf(verify(mesajj, sign, keys))) ;
     }
     public static String readKeyFile(String keyName) {
 
@@ -159,45 +207,21 @@ public class OpenPGPSignature {
         Log.e("dfgddb", text.toString());
         return text.toString();
     }
-    public static String readSignatureFile(String Name) {
-
-        String mainFile="Download";
-        String fileName = Name + ".asc";
-        java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
-        keyfile.mkdir();
-        File file = new File(keyfile, fileName);
-        StringBuilder text = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            Log.e("saved", "okundu");
-            br.close();
-        } catch (IOException e) {
-            Log.e("hata",e.toString());
-            //You'll need to add proper error handling here
+    public static PGPPublicKey getPublicKey(String publicKeyData) throws IOException, PGPException {
+        Log.e("Getir key", publicKeyData);
+        PGPPrivateKey privKey = null;
+        PGPPublicKeyRing pubKeyRing = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            pubKeyRing = new PGPPublicKeyRing(
+                    new ArmoredInputStream(new ByteArrayInputStream(publicKeyData.getBytes(StandardCharsets.UTF_8))),
+                    new BcKeyFingerprintCalculator()
+            );
         }
-        Log.e("dfgddb", text.toString());
-        return text.toString();
-    }
-    public static void dogrula(String mej){
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        String imzalanmis=readSignatureFile("signature");
-        InputStream mesajj = new ByteArrayInputStream(mej.getBytes());
-        InputStream sign = new ByteArrayInputStream(imzalanmis.getBytes());
-
-        PGPPublicKey keys = null;
-        try {
-            keys = (PGPPublicKey) KeyOperation.getPublicKey(readKeyFile("sumeyyeazizecengiz@gmail.com" + "_publicKey"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (PGPException e) {
-            e.printStackTrace();
+        if (Iterators.size(pubKeyRing.getPublicKeys()) < 1) {
+            Log.e("hataaaaaaaa","No keys in keyring");
         }
-        Log.e("dogrula", String.valueOf(verify(mesajj, sign, keys))) ;
+
+        PGPPublicKey signingKey = pubKeyRing.getPublicKey();
+        return signingKey;
     }
 }

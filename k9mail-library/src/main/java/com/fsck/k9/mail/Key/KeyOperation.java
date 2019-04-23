@@ -18,11 +18,35 @@ import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class KeyOperation {
+
+    public static  void createFile(String text, String message) {
+        String mainFile="keyFile";
+        String fileName =  text + ".asc";
+        java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
+        keyfile.mkdir();
+        //Log.e("Dosya Yeri", String.valueOf(Environment.getExternalStorageDirectory().getAbsolutePath()));
+        File file = new File(keyfile, fileName);
+        //Log.e("Dosya Yeri", String.valueOf(file));
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(message.getBytes());
+            fos.close();
+            Log.e("Saved", "Create");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e("Fail", e.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Use Storage.", "Fail");
+        }
+    }
 
     public static String readKeyFile(String keyName) {
 
@@ -52,7 +76,6 @@ public class KeyOperation {
 
     public static PGPSecretKey getPrivateSecretKey(String privateKeyData) throws IOException, PGPException {
         PGPPrivateKey privKey = null;
-        Log.e("dortttttttt","No keys in keyring");
         PGPSecretKeyRing pubKeyRing = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
             pubKeyRing = new PGPSecretKeyRing(
@@ -60,18 +83,16 @@ public class KeyOperation {
                     new BcKeyFingerprintCalculator()
             );
         }
-        Log.e("bessssssssssss","No keys in keyring");
         if (Iterators.size(pubKeyRing.getSecretKeys()) < 1) {
             Log.e("hataaaaaaaa","No keys in keyring");
         }
 
         PGPSecretKey signingKey = pubKeyRing.getSecretKey();
-        Log.e("secretttttttttttttt","No keys in keyring");
         return signingKey;
     }
     public static PGPPublicKey getPublicKey(String publicKeyData) throws IOException, PGPException {
+        Log.e("Getir key", publicKeyData);
         PGPPrivateKey privKey = null;
-        Log.e("birrrrrrrrrrrrrr","No keys in keyring");
         PGPPublicKeyRing pubKeyRing = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
             pubKeyRing = new PGPPublicKeyRing(
@@ -79,13 +100,11 @@ public class KeyOperation {
                     new BcKeyFingerprintCalculator()
             );
         }
-        Log.e("ikiiiiiiiiiiiiiii","No keys in keyring");
         if (Iterators.size(pubKeyRing.getPublicKeys()) < 1) {
             Log.e("hataaaaaaaa","No keys in keyring");
         }
 
         PGPPublicKey signingKey = pubKeyRing.getPublicKey();
-        Log.e("publiccccccc","No keys in keyring");
         return signingKey;
     }
 }

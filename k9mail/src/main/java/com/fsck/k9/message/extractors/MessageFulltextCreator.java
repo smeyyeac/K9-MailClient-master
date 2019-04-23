@@ -46,9 +46,11 @@ public class MessageFulltextCreator {
         String text = MessageExtractor.getTextFromPart(textPart, MAX_CHARACTERS_CHECKED_FOR_FTS);
         String mimeType = textPart.getMimeType();
         if (!MimeUtility.isSameMimeType(mimeType, "text/html")) {
+            Log.w("getir MFTC ",text);
+
             return text;
         }
-
+        Log.w("getir MFTC html",HtmlConverter.htmlToText(text));
         return HtmlConverter.htmlToText(text);
     }
 

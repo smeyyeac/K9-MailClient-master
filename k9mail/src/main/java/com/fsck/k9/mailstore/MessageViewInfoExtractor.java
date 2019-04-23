@@ -30,7 +30,7 @@ import com.fsck.k9.ui.crypto.MessageCryptoAnnotations;
 import com.fsck.k9.ui.crypto.MessageCryptoSplitter;
 import com.fsck.k9.ui.crypto.MessageCryptoSplitter.CryptoMessageParts;
 import com.fsck.k9.ui.messageview.AttachmentView;
-import com.fsck.k9.mailstore.AttachmentViewInfo;
+import com.fsck.k9.ui.messageview.MessageTopView;
 
 import static com.fsck.k9.mail.Signature.OpenPGPSignature.*;
 import static com.fsck.k9.mail.internet.MimeUtility.getHeaderParameter;
@@ -53,8 +53,9 @@ public class MessageViewInfoExtractor {
     private final Context context;
     private final AttachmentInfoExtractor attachmentInfoExtractor;
     private final HtmlSanitizer htmlSanitizer;
+    private String messageTo;
+    private static String messageFrom;
     private static String dogrulaText;
-
 
 
     public static MessageViewInfoExtractor getInstance() {
@@ -78,6 +79,12 @@ public class MessageViewInfoExtractor {
         Part rootPart;
         CryptoResultAnnotation cryptoResultAnnotation;
         List<Part> extraParts;
+
+
+        messageTo = Address.pack(message.getRecipients(Message.RecipientType.TO)).toLowerCase();
+        Log.e("getir to", messageTo);
+        messageFrom = parseFrom(Address.pack(message.getFrom())).toLowerCase();
+        Log.e("getir from", messageFrom);
 
         CryptoMessageParts cryptoMessageParts = MessageCryptoSplitter.split(message, annotations);
         if (cryptoMessageParts != null) {
@@ -201,17 +208,33 @@ public class MessageViewInfoExtractor {
                     hideDivider = false;
                 }
             }
-            dogrulaText=text.toString();
+            dogrulaText = text.toString();
             String content = HtmlConverter.wrapMessageContent(html);
             String sanitizedHtml = htmlSanitizer.sanitize(content);
+           // dogrulama(dogrulaText, messageFrom);
             return new ViewableExtractedText(text.toString(), sanitizedHtml);
         } catch (Exception e) {
             throw new MessagingException("Couldn't extract viewable parts", e);
         }
     }
-
-    public static String dogrulamaMetni(){
+    public static String dogrulamaMetni() {
         return (dogrulaText);
+    }
+    public static String dogrulamaFrom() {
+        return (messageFrom);
+    }
+
+    public void dogrulama(String dogrulaText, String messageFrom){
+        dogrula(dogrulaText, messageFrom);
+    }
+    private static String parseFrom(String search) {
+        String startOfBlock = "";
+        String endOfBlock = ";";
+        int startIndex = search.indexOf(startOfBlock) + startOfBlock.length();
+        int endIndex = search.indexOf(endOfBlock);
+        String result = search.substring(startIndex,endIndex);
+
+        return result;
     }
     /**
      * Use the contents of a {@link com.fsck.k9.mail.internet.Viewable} to create the HTML to be displayed.

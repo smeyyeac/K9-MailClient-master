@@ -1524,7 +1524,7 @@ public class MessagingController {
                  */
 
                 Set<Part> viewables = MessageExtractor.collectTextParts(message);
-
+                Log.w("GetirGelmiMessCon", "else de");
                 /*
                  * Now download the parts we're interested in storing.
                  */
@@ -3777,7 +3777,9 @@ public class MessagingController {
             part = MimeUtility.findFirstPartByMimeType(message, "text/html");
         }
         if (part != null) {
+
             quotedText = MessageExtractor.getTextFromPart(part);
+            Log.w("Getir MessageConroller send", quotedText);
         }
         if (quotedText != null) {
             msg.putExtra(Intent.EXTRA_TEXT, quotedText);

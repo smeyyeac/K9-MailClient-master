@@ -2,6 +2,7 @@ package com.fsck.k9.message.extractors;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.Part;
@@ -31,7 +32,7 @@ public class MessagePreviewCreator {
         if (encryptionDetector.isEncrypted(message)) {
             return PreviewResult.encrypted();
         }
-
+        Log.w("Getir MPC createPreview" ,"exractText");
         return extractText(message);
     }
 
@@ -43,6 +44,8 @@ public class MessagePreviewCreator {
 
         try {
             String previewText = previewTextExtractor.extractPreview(textPart);
+        //    Log.w("Getir MPC extractText" ,previewText);
+
             return PreviewResult.text(previewText);
         } catch (PreviewExtractionException e) {
             return PreviewResult.error();
