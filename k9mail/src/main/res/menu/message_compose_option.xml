@@ -15,12 +15,6 @@
         android:showAsAction="always"
     />
     <item
-        android:id="@+id/message_signature"
-        android:title="@string/message_signature"
-        android:icon="@drawable/signature"
-        android:checkable="false"
-        />
-    <item
         android:id="@+id/add_from_contacts"
         android:alphabeticShortcut="a"
         android:title="@string/add_from_contacts"
@@ -31,15 +25,20 @@
         android:title="@string/save_draft_action"
         android:icon="?attr/iconActionSave"
         />
+    <group android:checkableBehavior="single">
+    <item
+        android:id="@+id/message_signature"
+        android:title="@string/message_signature"
+        android:icon="@drawable/signature"
+            />
     <item
         android:id="@+id/message_encrypt"
         android:title="@string/message_encrypt"
-        android:icon="?attr/iconActionSignature"
         />
     <item
         android:id="@+id/message_signature_encrpt"
-        android:title="@string/message_signature_encrypt"
-        />
+        android:title="@string/message_signature_encrypt" />
+    </group>
     <item
         android:id="@+id/discard"
         android:alphabeticShortcut="q"

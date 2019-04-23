@@ -155,6 +155,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final int REQUEST_MASK_ATTACHMENT_PRESENTER = (1<<10);
     private static final int REQUEST_MASK_MESSAGE_BUILDER = (1<<11);
     boolean aktiflikimza=false;
+    boolean aktifliksifre=false;
+    boolean aktiflikimzasifre=false;
     /**
      * Regular expression to remove the first localized "Re:" prefix in subjects.
      *
@@ -1029,8 +1031,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 checkToSaveDraftAndSave();
                 break;
             case R.id.message_signature:
-
-                if(item.isChecked()){
+                if(item.isChecked() ){
                     item.setChecked(false);
                     aktiflikimza=false;
                     Toast.makeText(MessageCompose.this,  "İmzalama  kapatıldı.", Toast.LENGTH_LONG).show();
@@ -1039,8 +1040,35 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                else{
                    item.setChecked(true);
                    aktiflikimza=true;
-                  // boolean enabled = (boolean) item.isEnabled(true);
                     Toast.makeText(MessageCompose.this,  "İmzalama aktif" , Toast.LENGTH_LONG).show();
+                    break;
+
+                }
+            case R.id.message_encrypt:
+                if(item.isChecked() ){
+                    item.setChecked(false);
+                    aktifliksifre=false;
+                    Toast.makeText(MessageCompose.this,  "Şifreleme  kapatıldı.", Toast.LENGTH_LONG).show();
+                    break;
+                }
+                else{
+                    item.setChecked(true);
+                    aktifliksifre=true;
+                    Toast.makeText(MessageCompose.this,  "Şifreleme aktif" , Toast.LENGTH_LONG).show();
+                    break;
+
+                }
+            case R.id.message_signature_encrpt:
+                if(item.isChecked() ){
+                    item.setChecked(false);
+                    aktiflikimzasifre=false;
+                    Toast.makeText(MessageCompose.this,  "Şifreleme ve İmzalama  kapatıldı.", Toast.LENGTH_LONG).show();
+                    break;
+                }
+                else{
+                    item.setChecked(true);
+                    aktiflikimzasifre=true;
+                    Toast.makeText(MessageCompose.this,  "Şifreleme ve İmzalama aktif" , Toast.LENGTH_LONG).show();
                     break;
 
                 }
@@ -1827,18 +1855,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/signatureFile/signature.asc");
         Uri uri = Uri.fromFile(file);
         files.add(uri);
-        attachmentPresenter.addAttachment(uri,"/*/" );
+        attachmentPresenter.addAttachment(uri,"application/pgp-signature" );
         intentdosya.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
     }
-
-    public boolean signatureEnable(){
-        boolean enable=false;
-        if(enable==false){
-            enable=true;
-        }else{
-            enable=false;
-        }
-        return enable;
-    }
-
 }
