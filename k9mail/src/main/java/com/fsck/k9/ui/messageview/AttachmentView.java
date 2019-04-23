@@ -83,8 +83,8 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
         if((attachment.displayName) != "signature.asc"){
             onSaveButtonClick();
             dogrulama();
-            FileKey.deleteStorageFile("Download","signature.asc");
             FileKey.deleteStorageFile("Download",attachment.displayName);
+            FileKey.deleteStorageFile("Download","signature.asc");
         }
         else{
             Log.e("asdgdghdjhg", attachment.displayName);

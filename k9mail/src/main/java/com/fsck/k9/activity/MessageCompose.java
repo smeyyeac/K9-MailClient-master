@@ -790,7 +790,6 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             alreadyNotifiedUserOfEmptySubject = true;
             return;
         }
-        FileKey.deleteStorageFile("signatureFile","signature.asc");
         if (recipientPresenter.checkRecipientsOkForSending()) {
             return;
         }
