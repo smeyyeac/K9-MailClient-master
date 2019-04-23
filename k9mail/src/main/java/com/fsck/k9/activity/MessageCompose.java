@@ -48,6 +48,7 @@ import android.widget.Toast;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.Account.MessageFormat;
+import com.fsck.k9.NewActivityler.KeyResultActivity;
 import com.fsck.k9.NewClasslar.FileKey;
 import com.fsck.k9.FontSizes;
 import com.fsck.k9.Identity;
@@ -153,7 +154,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final int REQUEST_MASK_LOADER_HELPER = (1<<9);
     private static final int REQUEST_MASK_ATTACHMENT_PRESENTER = (1<<10);
     private static final int REQUEST_MASK_MESSAGE_BUILDER = (1<<11);
-
+    boolean aktiflikimza=false;
     /**
      * Regular expression to remove the first localized "Re:" prefix in subjects.
      *
@@ -784,7 +785,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     }
 
     private void checkToSendMessage() {
-        addFile();
+
         if (mSubjectView.getText().length() == 0 && !alreadyNotifiedUserOfEmptySubject) {
             Toast.makeText(this, R.string.empty_subject, Toast.LENGTH_LONG).show();
             alreadyNotifiedUserOfEmptySubject = true;
@@ -1013,13 +1014,36 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.send:
-                FileKey.createSignatureFile(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
-                checkToSendMessage();
-               //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
-                break;
+                if(aktiflikimza==true) {
+                   FileKey.createSignatureFile(OpenPGPSignature.imzalama( mMessageContentView.getCharacters()));
+                    addFile();
+                    checkToSendMessage();
+                    //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
+                    break;
+                }
+                else{
+                    checkToSendMessage();
+                    break;
+                }
             case R.id.save:
                 checkToSaveDraftAndSave();
                 break;
+            case R.id.message_signature:
+
+                if(item.isChecked()){
+                    item.setChecked(false);
+                    aktiflikimza=false;
+                    Toast.makeText(MessageCompose.this,  "İmzalama  kapatıldı.", Toast.LENGTH_LONG).show();
+                    break;
+                }
+               else{
+                   item.setChecked(true);
+                   aktiflikimza=true;
+                  // boolean enabled = (boolean) item.isEnabled(true);
+                    Toast.makeText(MessageCompose.this,  "İmzalama aktif" , Toast.LENGTH_LONG).show();
+                    break;
+
+                }
             case R.id.discard:
                 askBeforeDiscard();
                 break;
@@ -1805,6 +1829,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         files.add(uri);
         attachmentPresenter.addAttachment(uri,"/*/" );
         intentdosya.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+    }
+
+    public boolean signatureEnable(){
+        boolean enable=false;
+        if(enable==false){
+            enable=true;
+        }else{
+            enable=false;
+        }
+        return enable;
     }
 
 }

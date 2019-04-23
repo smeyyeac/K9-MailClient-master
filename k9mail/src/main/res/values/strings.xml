@@ -1264,5 +1264,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="message_signature">İmzala</string>
     <string name="secili_anahtar">Seçili anahtar</string>
     <string name="secili_anah">Anahtar seç</string>
+    <string name="message_encrypt">Şifrele</string>
+    <string name="message_signature_encrypt">Şifrele ve imzala</string>
 
 </resources>
