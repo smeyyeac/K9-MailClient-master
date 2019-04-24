@@ -78,7 +78,7 @@ public class FileKey {
         File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+ depoyeri ); // yol belirtmeyip sadece dosya ismi belirttiğimiz zaman otomatik olarak bulunduğu klasöre göre işlem yapar.
         f.mkdir();
         File file = new File( f, fileName);
-
+        Log.e("getirsilyol",String.valueOf(file));
         if(!file.exists()){ // eğer dosya yoksa
             System.out.println("Dosya bulunamadığından silinemedi");
         }else{
@@ -86,4 +86,27 @@ public class FileKey {
             System.out.println(f.getName() +" adlı dosya başarılı bir şekilde silinmiştir.");
         }
     }
+    public static void sifreliSil(){
+        File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/encrypted.asc"); // yol belirtmeyip sadece dosya ismi belirttiğimiz zaman otomatik olarak bulunduğu klasöre göre işlem yapar.
+
+        Log.e("getirsilyol", String.valueOf(f));
+        if (!f.exists()) { // eğer dosya yoksa
+            System.out.println("Dosya bulunamadığından silinemedi");
+        } else {
+            f.delete(); // eğer dosyamız varsa.. // silme işlemi gerçekleştirir.
+            System.out.println(f.getName() + " adlı dosya başarılı bir şekilde silinmiştir.");
+        }
+  /*  for(int i=2;i<4;i++) {
+        File fek = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/encrypted-"+ i+".asc"); // yol belirtmeyip sadece dosya ismi belirttiğimiz zaman otomatik olarak bulunduğu klasöre göre işlem yapar.
+
+        Log.e("getirsilyol", String.valueOf(fek));
+        if (!fek.exists()) { // eğer dosya yoksa
+            System.out.println("Dosya bulunamadığından silinemedi");
+        } else {
+            fek.delete(); // eğer dosyamız varsa.. // silme işlemi gerçekleştirir.
+            System.out.println(fek.getName() + " adlı dosya başarılı bir şekilde silinmiştir.");
+        }
+    }*/
+    }
+
 }

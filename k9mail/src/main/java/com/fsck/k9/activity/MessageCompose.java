@@ -41,6 +41,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -158,6 +159,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     boolean aktiflikimza=false;
     boolean aktifliksifre=false;
     boolean aktiflikimzasifre=false;
+    private String keyParola=null;
     /**
      * Regular expression to remove the first localized "Re:" prefix in subjects.
      *
@@ -1019,7 +1021,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         switch (item.getItemId()) {
             case R.id.send:
                 if(aktiflikimza==true) {
-                   FileKey.createSignatureFile(OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters()));
+                   FileKey.createSignatureFile(OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters(),keyParola));
+                    Log.e("getir sifre",keyParola);
                     addSignatureFile();
                     checkToSendMessage();
                     //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
@@ -1027,7 +1030,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 }
                 else if (aktifliksifre==true) {
                     //String messageFrom = Address.unpack(recipientPresenter.getToAddresses()).toLowerCase();
-                    FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted("saruhanur@gmail.com", mMessageContentView.getCharacters()));
+                    FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted("sumeyyeazizecengiz@gmail.com", mMessageContentView.getCharacters()));
                     addEncryptedFile();
                     checkToSendMessage();
                 break;
@@ -1051,6 +1054,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                    item.setChecked(true);
                    aktiflikimza=true;
                     Toast.makeText(MessageCompose.this,  "İmzalama aktif" , Toast.LENGTH_LONG).show();
+                    showMyCustomAlertDialog();
                     break;
 
                 }
@@ -1880,6 +1884,39 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         files.add(uri);
         attachmentPresenter.addAttachment(uri,"application/pgp-encrypted" );
         intentdosya.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+    }
+    public void showMyCustomAlertDialog() {
+        final Context context = this;
+        // dialog nesnesi oluştur ve layout dosyasına bağlan
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.parola_customdialog);
+
+        // custom dialog elemanlarını tanımla - text, image ve button
+        Button btnKaydet = (Button) dialog.findViewById(R.id.save);
+        final TextView[] parola = {(TextView) dialog.findViewById(R.id.parola)};
+        final TextView parolagir = (TextView) dialog.findViewById(R.id.parolagir);
+
+        // tamam butonunun tıklanma olayları
+       /* btnKaydet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Kaydet işlemi çalıştı!!", Toast.LENGTH_SHORT).show();
+            }
+        });*/
+        // iptal butonunun tıklanma olayları
+        btnKaydet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(parolagir.equals("")){
+                    Toast.makeText(MessageCompose.this,  "Lütfen anahtarınız için sifrenizi giriniz.", Toast.LENGTH_LONG).show();
+                }else {
+                    keyParola = parolagir.getText().toString();
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        dialog.show();
     }
 
 }

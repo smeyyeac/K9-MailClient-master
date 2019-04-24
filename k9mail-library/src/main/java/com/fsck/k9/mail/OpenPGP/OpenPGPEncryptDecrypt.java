@@ -197,7 +197,9 @@ public class OpenPGPEncryptDecrypt {
         File file = new File(keyfile, fileName);
         StringBuilder text = new StringBuilder();
         try {
+            Log.e("getiroku","1");
             BufferedReader br = new BufferedReader(new FileReader(file));
+            Log.e("getiroku","2");
             String line;
 
             while ((line = br.readLine()) != null) {

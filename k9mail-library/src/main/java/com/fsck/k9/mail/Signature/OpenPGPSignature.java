@@ -103,7 +103,7 @@ public class OpenPGPSignature {
         processStream(is, handler);
     }
 
-    public  static String imzalama(String email, String imzalanacak){
+    public  static String imzalama(String email, String imzalanacak,String parola){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         PGPSecretKey keys = null;
 
@@ -115,7 +115,6 @@ public class OpenPGPSignature {
             e.printStackTrace();
         }
 
-        String parola = "as";
         char[] charParola = parola.toCharArray();
         try {
             PBESecretKeyDecryptor b = new JcePBESecretKeyDecryptorBuilder(new JcaPGPDigestCalculatorProviderBuilder().setProvider("BC").build()).setProvider("BC").build(charParola);

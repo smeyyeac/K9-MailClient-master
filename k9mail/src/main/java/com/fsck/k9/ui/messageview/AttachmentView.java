@@ -2,6 +2,7 @@ package com.fsck.k9.ui.messageview;
 
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.fsck.k9.mail.Signature.OpenPGPSignature;
 import com.fsck.k9.mailstore.AttachmentViewInfo;
 import com.fsck.k9.mailstore.MessageViewInfo;
 import com.fsck.k9.mailstore.MessageViewInfoExtractor;
+
+import java.io.File;
 
 import static com.fsck.k9.mail.Signature.OpenPGPSignature.dogrula;
 
@@ -101,8 +104,11 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
             Log.e("Getir encrypt", encryptedMessage );
             decryptedMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, encryptedMessage);
             Log.e("Getir decrypt", decryptedMessage );
-            FileKey.deleteStorageFile("Download","encrypted.asc");
-
+            int i=0;
+            while(i<40000){
+               i++;
+            }
+            FileKey.sifreliSil();
         }
         else{
             Log.e("Getir attachmentElse", attachment.displayName);
