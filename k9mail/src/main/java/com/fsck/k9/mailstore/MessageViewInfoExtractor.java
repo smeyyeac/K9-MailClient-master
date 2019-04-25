@@ -16,12 +16,14 @@ import android.widget.Toast;
 import com.fsck.k9.Globals;
 import com.fsck.k9.K9;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.helper.HtmlConverter;
 import com.fsck.k9.helper.HtmlSanitizer;
 import com.fsck.k9.mail.Address;
 import com.fsck.k9.mail.Flag;
 import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.MessagingException;
+import com.fsck.k9.mail.OpenPGP.OpenPGPEncryptDecrypt;
 import com.fsck.k9.mail.Part;
 import com.fsck.k9.mail.Signature.OpenPGPSignature;
 import com.fsck.k9.mail.internet.MessageExtractor;
@@ -110,6 +112,7 @@ public class MessageViewInfoExtractor {
         if (extraParts != null) {
             ViewableExtractedText extraViewable =
                     extractViewableAndAttachments(extraParts, extraAttachmentInfos);
+
             extraViewableText = extraViewable.text;
         }
 
@@ -212,8 +215,9 @@ public class MessageViewInfoExtractor {
             dogrulaText = text.toString();
             String content = HtmlConverter.wrapMessageContent(html);
             String sanitizedHtml = htmlSanitizer.sanitize(content);
-           // dogrulama(dogrulaText, messageFrom);
+            //dogrulama(dogrulaText, messageFrom);
             //Toast.makeText(context.getApplicationContext(),  Toast.LENGTH_SHORT ).show();
+            //String decryptText = AttachmentView.decrypt(messageTo);
             return new ViewableExtractedText(text.toString(), sanitizedHtml);
         } catch (Exception e) {
             throw new MessagingException("Couldn't extract viewable parts", e);
@@ -229,8 +233,12 @@ public class MessageViewInfoExtractor {
     public static String decryptTo() {
         return (messageTo);
     }
+    public static String encryptedMessage() {
 
+     String   encryptedMessage = OpenPGPEncryptDecrypt.readDownloadFile("encrypted");
+     return encryptedMessage;
 
+    }
 
 
     public void dogrulama(String dogrulaText, String messageFrom){
@@ -319,7 +327,7 @@ public class MessageViewInfoExtractor {
                 divider = true;
             }
         }
-
+        Log.e("getir ne dondu", text.toString());
         return text;
     }
 
@@ -356,6 +364,7 @@ public class MessageViewInfoExtractor {
         String disposition = part.getDisposition();
         if (disposition != null) {
             String name = getHeaderParameter(disposition, "filename");
+            Log.w("Getir getPartName", name);
             return (name == null) ? "" : name;
         }
 

@@ -157,17 +157,18 @@ public abstract class MessageBuilder {
             // Let the receiver select either the text or the HTML part.
             bodyPlain = buildText(isDraft, SimpleMessageFormat.TEXT);
             composedMimeMessage.addBodyPart(new MimeBodyPart(bodyPlain, "text/plain"));
-            composedMimeMessage.addBodyPart(new MimeBodyPart(body, "text/html"));
+//            composedMimeMessage.addBodyPart(new MimeBodyPart(body, "text/html"));
+            MimeMessageHelper.setBody(message, composedMimeMessage);
 
             if (hasAttachments) {
                 // If we're HTML and have attachments, we have a MimeMultipart container to hold the
                 // whole message (mp here), of which one part is a MimeMultipart container
                 // (composedMimeMessage) with the user's composed messages, and subsequent parts for
                 // the attachments.
-                MimeMultipart mp = createMimeMultipart();
-                mp.addBodyPart(new MimeBodyPart(composedMimeMessage));
-                addAttachmentsToMessage(mp);
-                MimeMessageHelper.setBody(message, mp);
+                //MimeMultipart mp = createMimeMultipart();
+                //mp.addBodyPart(new MimeBodyPart(composedMimeMessage));
+                addAttachmentsToMessage(composedMimeMessage);
+                MimeMessageHelper.setBody(message, composedMimeMessage);
             } else {
                 // If no attachments, our multipart/alternative part is the only one we need.
                 MimeMessageHelper.setBody(message, composedMimeMessage);

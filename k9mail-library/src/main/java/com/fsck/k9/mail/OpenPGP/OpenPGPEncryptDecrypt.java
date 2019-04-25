@@ -42,6 +42,7 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.util.Date;
 
+
 public class OpenPGPEncryptDecrypt {
     private static final BouncyCastleProvider provider = new BouncyCastleProvider();
 
@@ -49,7 +50,7 @@ public class OpenPGPEncryptDecrypt {
         Security.addProvider(provider);
     }
 
-    private static String encrypt(PGPPublicKey publicKey, String msgText) throws IOException, PGPException {
+    private static String encrypt(PGPPublicKey publicKey, String msgText) throws PGPException {
         try {
             byte[] clearData = msgText.getBytes();
             ByteArrayOutputStream encOut = new ByteArrayOutputStream();
@@ -82,13 +83,35 @@ public class OpenPGPEncryptDecrypt {
         }
     }
 
+    public  static String encrypted(String messageTo, String message){
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        PGPPublicKey publicKey = null;
+        String encryptMessage = null;
 
+        try {
+            publicKey = (PGPPublicKey) KeyOperation.getPublicKey(KeyOperation.readKeyFile(messageTo + "_publicKey"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (PGPException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            encryptMessage = encrypt(publicKey, message);
+            return encryptMessage;
+        }  catch (PGPException e) {
+            e.printStackTrace();
+        }
+        Log.e("Getir encrypt", encryptMessage );
+        return encryptMessage;
+
+    }
     private static String decrypt(PGPPrivateKey privateKey, String encryptedText) throws Exception {
-        Log.e("Getir decrypt", "nerde");
         byte[] encrypted = encryptedText.getBytes();
         InputStream in = new ByteArrayInputStream(encrypted);
         in = PGPUtil.getDecoderStream(in);
         BcPGPObjectFactory pgpF = new BcPGPObjectFactory(in);
+        in.close();
         PGPEncryptedDataList enc;
         Object o = pgpF.nextObject();
         if (o instanceof PGPEncryptedDataList) {
@@ -97,13 +120,9 @@ public class OpenPGPEncryptDecrypt {
             enc = (PGPEncryptedDataList) pgpF.nextObject();
         }
         PGPPublicKeyEncryptedData pbe = null;
-
         if (privateKey != null && enc.getEncryptedDataObjects().hasNext()) {
             pbe = (PGPPublicKeyEncryptedData) enc.getEncryptedDataObjects().next();
-        }else{
-            Log.e("Getir decrypt","else düştü.Private null?");
         }
-
         if (pbe != null) {
             InputStream clear = pbe.getDataStream(new BcPublicKeyDataDecryptorFactory(privateKey));
             BcPGPObjectFactory pgpFact = new BcPGPObjectFactory(clear);
@@ -121,53 +140,31 @@ public class OpenPGPEncryptDecrypt {
             clear.close();
             unc.close();
             out.close();
-
             return new String(returnBytes);
         }
 
         return null;
     }
 
-
-    public  static String encrypted(String messageTo, String message){
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        PGPPublicKey publicKey = null;
-        String encryptMessage = null;
-
-        try {
-            publicKey = (PGPPublicKey) KeyOperation.getPublicKey(KeyOperation.readKeyFile(messageTo + "_publicKey"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (PGPException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            encryptMessage = encrypt(publicKey, message);
-            return encryptMessage;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (PGPException e) {
-            e.printStackTrace();
-        }
-        Log.e("Getir encrypt", encryptMessage );
-        return encryptMessage;
-
-    }
-
-    public static String decrypted(String email, String encryptedMessage){
+    public static String decrypted(String email){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         PGPSecretKey keys = null;
         PGPPrivateKey privateKey = null;
         String decryptMessage = null;
 
+        String encryptedMessage = null;
+
+        encryptedMessage = OpenPGPEncryptDecrypt.readDownloadFile("encrypted");
+
+        Log.e("Getir encrypt", encryptedMessage);
         try {
-            keys = KeyOperation.getPrivateSecretKey(readKeyFile(email + "_privateKey"));
+            keys = KeyOperation.getPrivateSecretKey(KeyOperation.readKeyFile(email + "_privateKey"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (PGPException e) {
             e.printStackTrace();
         }
+
 
         String parola = "as";
         char[] charParola = parola.toCharArray();
@@ -180,15 +177,20 @@ public class OpenPGPEncryptDecrypt {
         }
 
         try {
-            decryptMessage = decrypt(privateKey, encryptedMessage);
-            return decryptMessage;
+            if (encryptedMessage != "") {
+                decryptMessage = decrypt(privateKey, encryptedMessage);
+                //decryptMessage = decrypt(encryptedMessage, keys, "as");
+                return decryptMessage;
+            }else {
+                Log.w("Getir encrypt","dosya okunamadı");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return decryptMessage;
     }
 
-    public static String readDownloadFile(String Name) {
+    public static String readDownloadFile(String Name)  {
 
         String mainFile="Download";
         String fileName = Name + ".asc";
@@ -196,10 +198,9 @@ public class OpenPGPEncryptDecrypt {
         keyfile.mkdir();
         File file = new File(keyfile, fileName);
         StringBuilder text = new StringBuilder();
+        BufferedReader br = null;
         try {
-            Log.e("getiroku","1");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            Log.e("getiroku","2");
+            br = new BufferedReader(new FileReader(file));
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -211,32 +212,6 @@ public class OpenPGPEncryptDecrypt {
             Log.e("hata",e.toString());
             //You'll need to add proper error handling here
         }
-        Log.e("dfgddb", text.toString());
-        return text.toString();
-    }
-    public static String readKeyFile(String keyName) {
-
-        String mainFile="keyFile";
-        String fileName = keyName + ".asc";
-        java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
-        keyfile.mkdir();
-        File file = new File(keyfile, fileName);
-        StringBuilder text = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            Log.e("saved", "okundu");
-            br.close();
-        } catch (IOException e) {
-            Log.e("hata",e.toString());
-            //You'll need to add proper error handling here
-        }
-        Log.e("dfgddb", text.toString());
         return text.toString();
     }
 

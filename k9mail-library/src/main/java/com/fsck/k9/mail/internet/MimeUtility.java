@@ -1136,7 +1136,7 @@ public class MimeUtility {
             return (MimeUtil.ENC_8BIT);
         } else {
             return (MimeUtil.ENC_BASE64);
-           // return (MimeUtil.ENC_7BIT);
+           //return (MimeUtil.ENC_7BIT);
         }
     }
 

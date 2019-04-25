@@ -1026,12 +1026,14 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     addSignatureFile();
                     checkToSendMessage();
                     //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
+
                     break;
                 }
                 else if (aktifliksifre==true) {
                     //String messageFrom = Address.unpack(recipientPresenter.getToAddresses()).toLowerCase();
                     FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted("sumeyyeazizecengiz@gmail.com", mMessageContentView.getCharacters()));
                     addEncryptedFile();
+                    mMessageContentView.setCharacters("Ne o okumak mı istedin. ");
                     checkToSendMessage();
                 break;
                 }

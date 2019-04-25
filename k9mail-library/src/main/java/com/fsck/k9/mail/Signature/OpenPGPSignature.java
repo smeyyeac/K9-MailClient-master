@@ -83,6 +83,7 @@ public class OpenPGPSignature {
             // can we put a logger here please?
             return false;
         }
+
     }
 
     private static final int BUFFER_SIZE = 4096;

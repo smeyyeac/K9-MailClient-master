@@ -57,8 +57,7 @@ public class MessageExtractor {
                 if (mimeType != null && MimeUtility.mimeTypeMatches(mimeType, "text/*") ||
                         part.isMimeType("application/pgp")) {
 
-
-                    Log.w("Getir MessageExractor", getTextFromTextPart(part, body, mimeType, textSizeLimit));
+                    //Log.w("Getir MessageExractor", getTextFromTextPart(part, body, mimeType, textSizeLimit));
 
                     return getTextFromTextPart(part, body, mimeType, textSizeLimit);
                 } else {
