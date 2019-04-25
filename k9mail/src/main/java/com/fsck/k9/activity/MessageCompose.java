@@ -1903,12 +1903,11 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                 Toast.makeText(context, "Kaydet işlemi çalıştı!!", Toast.LENGTH_SHORT).show();
             }
         });*/
-        // iptal butonunun tıklanma olayları
         btnKaydet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(parolagir.equals("")){
-                    Toast.makeText(MessageCompose.this,  "Lütfen anahtarınız için sifrenizi giriniz.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,  "Lütfen anahtarınız için sifrenizi giriniz.", Toast.LENGTH_LONG).show();
                 }else {
                     keyParola = parolagir.getText().toString();
                     dialog.dismiss();

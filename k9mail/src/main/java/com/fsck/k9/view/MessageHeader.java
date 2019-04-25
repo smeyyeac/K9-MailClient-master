@@ -1,11 +1,6 @@
 package com.fsck.k9.view;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +21,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.QuickContactBadge;
@@ -60,6 +56,7 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
     private TextView mCcLabel;
     private TextView mSubjectView;
     private MessageCryptoStatusView mCryptoStatusIcon;
+    private static Button mSignatureResult;
 
     private View mChip;
     private CheckBox mFlagged;
@@ -119,6 +116,7 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
         mChip = findViewById(R.id.chip);
         mDateView = (TextView) findViewById(R.id.date);
         mFlagged = (CheckBox) findViewById(R.id.flagged);
+        mSignatureResult=(Button) findViewById(R.id.signature_result);
 
         defaultSubjectColor = mSubjectView.getCurrentTextColor();
         mFontSizes.setViewTextSize(mSubjectView, mFontSizes.getMessageViewSubject());
@@ -524,5 +522,12 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
 
     public void setOnCryptoClickListener(OnCryptoClickListener onCryptoClickListener) {
         this.onCryptoClickListener = onCryptoClickListener;
+    }
+
+    public static void tikYap(){
+        mSignatureResult.setBackgroundResource(R.drawable.yesiltik);
+    }
+    public static void carpiYap(){
+        mSignatureResult.setBackgroundResource(R.drawable.kirmizicarpi);
     }
 }

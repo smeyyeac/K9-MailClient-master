@@ -2,7 +2,6 @@ package com.fsck.k9.ui.messageview;
 
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -16,20 +15,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.fsck.k9.K9;
 import com.fsck.k9.NewClasslar.FileKey;
-import com.fsck.k9.NewClasslar.OpenPGP;
 import com.fsck.k9.R;
 import com.fsck.k9.helper.SizeFormatter;
-import com.fsck.k9.mail.Key.KeyOperation;
 import com.fsck.k9.mail.OpenPGP.OpenPGPEncryptDecrypt;
 import com.fsck.k9.mail.Signature.OpenPGPSignature;
 import com.fsck.k9.mailstore.AttachmentViewInfo;
-import com.fsck.k9.mailstore.MessageViewInfo;
 import com.fsck.k9.mailstore.MessageViewInfoExtractor;
-
-import java.io.File;
-
-import static com.fsck.k9.mail.Signature.OpenPGPSignature.dogrula;
-
+import com.fsck.k9.view.MessageHeader;
 
 
 public class AttachmentView extends FrameLayout implements OnClickListener, OnLongClickListener {
@@ -38,10 +30,11 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
 
     private Button viewButton;
     private Button downloadButton;
+    private Button msignatureResult;
     private static String messageTo;
     private static String encryptedMessage = "";
     private static String decryptedMessage = "";
-
+    public static String signaturuResult=null;
 
     public AttachmentView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -88,14 +81,23 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
         downloadButton.setOnClickListener(this);
         downloadButton.setOnLongClickListener(this);
 
-
-
         TextView attachmentName = (TextView) findViewById(R.id.attachment_name);
         attachmentName.setText(attachment.displayName);
         Log.w("Getir attaclar", attachment.displayName);
+
         if(attachment.displayName.equals("signature.asc")){
             onSaveButtonClick();
-            dogrulama();
+
+            String metin = MessageViewInfoExtractor.dogrulamaMetni();
+            String mFrom = MessageViewInfoExtractor.dogrulamaFrom();
+            Log.e("gelenmetin",metin);
+           if(OpenPGPSignature.dogrula(metin, mFrom)== "true"){
+               MessageHeader.tikYap();
+            }
+            else{
+                Log.e("dogrula burada","burada");
+                MessageHeader.carpiYap();
+           }
             FileKey.deleteStorageFile("Download","signature.asc");
         }else if(attachment.displayName.equals("encrypted.asc")){
             onSaveButtonClick();
@@ -117,6 +119,7 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
 
         refreshThumbnail();
     }
+
 
     private void setAttachmentSize(long size) {
         TextView attachmentSize = (TextView) findViewById(R.id.attachment_info);
@@ -178,10 +181,4 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
                 .into(thumbnailView);
     }
 
-    public void dogrulama(){
-        String metin = MessageViewInfoExtractor.dogrulamaMetni();
-        String mFrom = MessageViewInfoExtractor.dogrulamaFrom();
-        Log.e("gelenmetin",metin);
-        OpenPGPSignature.dogrula(metin, mFrom);
-    }
 }

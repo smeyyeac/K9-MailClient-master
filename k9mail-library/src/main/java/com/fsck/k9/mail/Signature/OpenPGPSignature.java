@@ -103,7 +103,7 @@ public class OpenPGPSignature {
         processStream(is, handler);
     }
 
-    public  static String imzalama(String email, String imzalanacak,String parola){
+    public  static String imzalama(String email, String mesaj,String parola){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         PGPSecretKey keys = null;
 
@@ -124,7 +124,7 @@ public class OpenPGPSignature {
             e.printStackTrace();
         }
         try {
-            imza = OpenPGPSignature.signArmoredAscii(pKey,imzalanacak , 2);
+            imza = OpenPGPSignature.signArmoredAscii(pKey,mesaj , 2);
             Log.e("imza", imza );
             return imza;
 
@@ -163,7 +163,7 @@ public class OpenPGPSignature {
         Log.e("dfgddb", text.toString());
         return text.toString();
     }
-    public static void dogrula(String message, String mFrom){
+    public static String dogrula(String message, String mFrom){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         String imzalanmis = readDownloadFile("signature");
         InputStream mesajj = new ByteArrayInputStream(message.getBytes());
@@ -178,7 +178,8 @@ public class OpenPGPSignature {
         } catch (PGPException e) {
             e.printStackTrace();
         }
-        Log.e("getir dogrula", String.valueOf(verify(mesajj, sign, keys))) ;
+
+        return String.valueOf(verify(mesajj, sign, keys));
     }
     public static String readKeyFile(String keyName) {
 

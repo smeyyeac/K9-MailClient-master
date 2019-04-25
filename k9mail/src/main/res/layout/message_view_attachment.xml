@@ -74,6 +74,7 @@
                 android:layout_toLeftOf="@id/download"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_below="@id/attachment_name" />
+
         </RelativeLayout>
     </LinearLayout>
 </com.fsck.k9.ui.messageview.AttachmentView>
