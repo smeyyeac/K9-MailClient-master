@@ -1029,13 +1029,15 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     break;
                 }
                 else if (aktifliksifre==true) {
-                  //  recipientPresenter.getToAddresses();
-                  //  String messageFrom = Address.unpack().toLowerCase();
-                    FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted("saruhanur@gmail.com", mMessageContentView.getCharacters()));
+                    Address[] addresses = new Address[1];
+                    addresses[0] = recipientPresenter.getToAddresses().get(0);
+                    String messageTo =  Address.pack(addresses).toLowerCase();
+                    Log.e("MessageTo", messageTo);
+                    FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters()));
                     addEncryptedFile();
-                    mMessageContentView.setCharacters("Ne o okumak mı istedin. ");
+                    mMessageContentView.setCharacters("Şifreli mesaj gönderilmiştir.");
                     checkToSendMessage();
-                break;
+                    break;
                 }
                 else{
                     checkToSendMessage();

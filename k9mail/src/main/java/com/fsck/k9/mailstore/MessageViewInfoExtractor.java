@@ -99,7 +99,6 @@ public class MessageViewInfoExtractor {
         CryptoResultAnnotation cryptoResultAnnotation;
         List<Part> extraParts;
 
-
         messageTo = Address.pack(message.getRecipients(Message.RecipientType.TO)).toLowerCase();
         Log.e("getir to", messageTo);
         messageFrom = parseFrom(Address.pack(message.getFrom())).toLowerCase();
