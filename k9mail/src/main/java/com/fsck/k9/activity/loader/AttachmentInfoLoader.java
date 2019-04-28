@@ -2,6 +2,7 @@ package com.fsck.k9.activity.loader;
 
 import java.io.File;
 
+import android.app.Dialog;
 import android.content.AsyncTaskLoader;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -101,4 +102,5 @@ public class AttachmentInfoLoader  extends AsyncTaskLoader<Attachment> {
         cachedResultAttachment = sourceAttachment.deriveWithMetadataLoaded(usableContentType, name, size);
         return cachedResultAttachment;
     }
+
 }

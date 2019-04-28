@@ -246,7 +246,7 @@ public class QuotedMessagePresenter {
             if (part != null) { // Shouldn't happen if we were the one who saved it.
                 quotedTextFormat = SimpleMessageFormat.HTML;
                 String text = MessageExtractor.getTextFromPart(part);
-                Log.w("GetirQuatedMesPresneter", text);
+                Log.w("GetirQuatedMesPresenter", text);
                 if (K9.DEBUG) {
                     Log.d(K9.LOG_TAG, "Loading message with offset " + bodyOffset + ", length " + bodyLength +
                             ". Text length is " + text.length() + ".");
@@ -261,6 +261,8 @@ public class QuotedMessagePresenter {
                 // Grab our reply text.
                 String bodyText = text.substring(bodyOffset, bodyOffset + bodyLength);
                 view.setMessageContentCharacters(HtmlConverter.htmlToText(bodyText));
+                Log.e("GetirQuatedMesPresenter", bodyText);
+                Log.e("GetirQuatedMesPresenter", HtmlConverter.htmlToText(bodyText));
 
                 // Regenerate the quoted html without our user content in it.
                 StringBuilder quotedHTML = new StringBuilder();
@@ -286,6 +288,7 @@ public class QuotedMessagePresenter {
             }
         } else if (messageFormat == MessageFormat.TEXT) {
             quotedTextFormat = SimpleMessageFormat.TEXT;
+
             processSourceMessageText(messageViewInfo.rootPart, bodyOffset, bodyLength, true);
         } else {
             Log.e(K9.LOG_TAG, "Unhandled message format.");
@@ -311,6 +314,7 @@ public class QuotedMessagePresenter {
     private void processSourceMessageText(
             Part rootMessagePart, int bodyOffset, int bodyLength, boolean viewMessageContent) {
         Part textPart = MimeUtility.findFirstPartByMimeType(rootMessagePart, "text/plain");
+
         if (textPart == null) {
             return;
         }

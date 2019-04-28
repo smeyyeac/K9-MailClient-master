@@ -34,12 +34,15 @@ import com.fsck.k9.helper.Contacts;
 import com.fsck.k9.helper.HtmlConverter;
 import com.fsck.k9.helper.Utility;
 import com.fsck.k9.mail.Address;
+import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mailstore.AttachmentResolver;
 import com.fsck.k9.mailstore.AttachmentViewInfo;
 import com.fsck.k9.mailstore.MessageViewInfo;
 import com.fsck.k9.view.MessageHeader.OnLayoutChangedListener;
 import com.fsck.k9.view.MessageWebView;
 import com.fsck.k9.view.MessageWebView.OnPageFinishedListener;
+
+import org.apache.james.mime4j.util.MimeUtil;
 
 
 public class MessageContainerView extends LinearLayout implements OnLayoutChangedListener, OnCreateContextMenuListener {
@@ -89,6 +92,7 @@ public class MessageContainerView extends LinearLayout implements OnLayoutChange
         }
         mMessageContentView.setOnCreateContextMenuListener(this);
         mMessageContentView.setVisibility(View.VISIBLE);
+
 
         mAttachmentsContainer = findViewById(R.id.attachments_container);
         mAttachments = (LinearLayout) findViewById(R.id.attachments);
@@ -379,7 +383,7 @@ public class MessageContainerView extends LinearLayout implements OnLayoutChange
 
         resetView();
 
-        renderAttachments(messageViewInfo);
+        renderAttachments(messageViewInfo); //Mesaja eki buradan ekliyor
 
         if (mSavedState != null) {
             if (mSavedState.showingPictures) {
@@ -390,6 +394,14 @@ public class MessageContainerView extends LinearLayout implements OnLayoutChange
         }
 
         String textToDisplay = messageViewInfo.text;
+/*        Log.w("Getir displayText:",  messageViewInfo.text);
+        Log.w("Getir displayExtraText:",  messageViewInfo.extraText);
+        Log.w("Getir displayAttacType:",  messageViewInfo.attachments.get(0).part.getContentType());
+       // Log.w("Getir displayAttacType:",  messageViewInfo.attachments.get(0).part.getContentId());
+        Log.w("Getir displayAttacType:",  messageViewInfo.attachments.get(0).part.getDisposition());
+        Log.w("Getir displayAttaMime",  messageViewInfo.attachments.get(0).part.getMimeType());
+
+*/
         if (textToDisplay != null && !isShowingPictures()) {
             if (Utility.hasExternalImages(textToDisplay)) {
                 if (automaticallyLoadPictures) {
@@ -430,11 +442,13 @@ public class MessageContainerView extends LinearLayout implements OnLayoutChange
     private void displayHtmlContentWithInlineAttachments(String htmlText, AttachmentResolver attachmentResolver,
             OnPageFinishedListener onPageFinishedListener) {
         currentHtmlText = htmlText;
+        Log.w("GetirMContViewHtmlText1", currentHtmlText);
         currentAttachmentResolver = attachmentResolver;
         mMessageContentView.displayHtmlContentWithInlineAttachments(htmlText, attachmentResolver, onPageFinishedListener);
     }
 
     private void refreshDisplayedContent() {
+        Log.w("GetirMContViewHtmlText2", currentHtmlText);
         mMessageContentView.displayHtmlContentWithInlineAttachments(currentHtmlText, currentAttachmentResolver, null);
     }
 

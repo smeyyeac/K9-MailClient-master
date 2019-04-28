@@ -1,6 +1,14 @@
 package com.fsck.k9.mailstore;
 
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -16,6 +24,7 @@ import android.widget.Toast;
 import com.fsck.k9.Globals;
 import com.fsck.k9.K9;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.MessageCompose;
 import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.helper.HtmlConverter;
 import com.fsck.k9.helper.HtmlSanitizer;
@@ -34,6 +43,9 @@ import com.fsck.k9.ui.crypto.MessageCryptoSplitter;
 import com.fsck.k9.ui.crypto.MessageCryptoSplitter.CryptoMessageParts;
 import com.fsck.k9.ui.messageview.AttachmentView;
 import com.fsck.k9.ui.messageview.MessageTopView;
+
+
+import org.bouncycastle.util.encoders.Base64;
 
 import static com.fsck.k9.mail.Signature.OpenPGPSignature.*;
 import static com.fsck.k9.mail.internet.MimeUtility.getHeaderParameter;
@@ -56,10 +68,14 @@ public class MessageViewInfoExtractor {
     private final Context context;
     private final AttachmentInfoExtractor attachmentInfoExtractor;
     private final HtmlSanitizer htmlSanitizer;
+
     private static String messageTo;
     private static String messageFrom;
     private static String dogrulaText;
-
+    private static String decryptedMessage = "";
+    private static String encryptedMessage = "";
+    private static List<AttachmentViewInfo> attachmentInfosNew;
+    private static String signatureResult = "";
 
     public static MessageViewInfoExtractor getInstance() {
         Context context = Globals.getContext();
@@ -135,9 +151,74 @@ public class MessageViewInfoExtractor {
         }
 
         attachmentInfos.addAll(attachmentInfoExtractor.extractAttachmentInfoForView(attachments));
+
+
+        attachmentInfosNew = attachmentInfos;
+        decryptedMessage = findAttachmentEncrypt();
+
         return extractTextFromViewables(viewableParts);
     }
 
+    public String findAttachmentEncrypt(){
+        byte[] decodedBytes = new byte[0];
+        if(attachmentInfosNew.size() != 0){
+            for(int i = 0; i < attachmentInfosNew.size(); i++){
+                if(attachmentInfosNew.get(i).displayName.equals("encrypted.asc")){
+                    Log.w("Getir Girdimi", "encrypt");
+
+                    try {
+                        decodedBytes = Base64.decode(convertStreamToString(attachmentInfosNew.get(i).part.getBody().getInputStream()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    }
+                    String encryptedMessage = new String(decodedBytes);
+                    String messageTo = MessageViewInfoExtractor.decryptTo();
+                    decryptedMessage = decrypt(messageTo, encryptedMessage);
+                    Log.w("Getir Son", decryptedMessage);
+                    return decryptedMessage;
+                }
+            }
+        }else {
+            Log.w("Getir else","decryp null");
+            decryptedMessage = "";
+        }
+        decryptedMessage = "";
+        return decryptedMessage;
+    }
+    public static String decrypt(String messageTo,String encryptedMessage){
+        String decryptMessage = "";
+        decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, encryptedMessage );
+        Log.e("Getir decrypt", String.valueOf(decryptMessage));
+        while (decryptMessage == null){
+            decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, encryptedMessage );
+            Log.e("Getir decrypt nullmu", String.valueOf(decryptMessage) );
+        }
+        return decryptMessage;
+    }
+
+
+    public String convertStreamToString(InputStream is)
+            throws IOException {
+        if (is != null) {
+            Writer writer = new StringWriter();
+            char[] buffer = new char[1024];
+            try {
+                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                int n;
+                while ((n = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
+                }
+            }
+            finally {
+                is.close();
+            }
+            return writer.toString();
+        } else {
+            return "";
+        }
+    }
     /**
      * Extract the viewable textual parts of a message and return the rest as attachments.
      *
@@ -212,20 +293,69 @@ public class MessageViewInfoExtractor {
                     hideDivider = false;
                 }
             }
+
             dogrulaText = text.toString();
-            String content = HtmlConverter.wrapMessageContent(html);
+            String content = "";
+
+            if(!decryptedMessage.equals("")){
+                content = HtmlConverter.wrapMessageContent(html.append("Şifreli Mesajınız: " + decryptedMessage));
+            }else {
+               content = HtmlConverter.wrapMessageContent(html);
+            }
+
+            if (booleanAttachmentSignature()){
+                findAttachmentSignature();
+            }
+
             String sanitizedHtml = htmlSanitizer.sanitize(content);
-            //dogrulama(dogrulaText, messageFrom);
-            //Toast.makeText(context.getApplicationContext(),  Toast.LENGTH_SHORT ).show();
-            //String decryptText = AttachmentView.decrypt(messageTo);
+
             return new ViewableExtractedText(text.toString(), sanitizedHtml);
         } catch (Exception e) {
             throw new MessagingException("Couldn't extract viewable parts", e);
         }
     }
+
+    public Boolean booleanAttachmentSignature(){
+        if(attachmentInfosNew.size() != 0) {
+            for (int i = 0; i < attachmentInfosNew.size(); i++) {
+                if (attachmentInfosNew.get(i).displayName.equals("signature.asc")) {
+                    return true;
+                }
+            }
+        }
+        signatureResult = "";
+        return false;
+    }
+
+    public void findAttachmentSignature(){
+        byte[] decodedBytes = new byte[0];
+        if(attachmentInfosNew.size() != 0) {
+            for (int i = 0; i < attachmentInfosNew.size(); i++) {
+                if (attachmentInfosNew.get(i).displayName.equals("signature.asc")) {
+                    Log.w("Getir Girdimi", "signature");
+                    try {
+                        decodedBytes = Base64.decode(convertStreamToString(attachmentInfosNew.get(i).part.getBody().getInputStream()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    }
+                    String signatureText = new String(decodedBytes);
+                    String mFrom = dogrulamaFrom();
+                    String metin = dogrulamaMetni();
+                    signatureResult = OpenPGPSignature.dogrula(signatureText, metin, mFrom);
+                }
+            }
+        }
+
+    }
+    public static String signaruteResult() {
+        return (signatureResult);
+    }
     public static String dogrulamaMetni() {
         return (dogrulaText);
     }
+
     public static String dogrulamaFrom() {
         return (messageFrom);
     }
@@ -233,17 +363,7 @@ public class MessageViewInfoExtractor {
     public static String decryptTo() {
         return (messageTo);
     }
-    public static String encryptedMessage() {
 
-     String   encryptedMessage = OpenPGPEncryptDecrypt.readDownloadFile("encrypted");
-     return encryptedMessage;
-
-    }
-
-
-    public void dogrulama(String dogrulaText, String messageFrom){
-        dogrula(dogrulaText, messageFrom);
-    }
     private static String parseFrom(String search) {
         String startOfBlock = "";
         String endOfBlock = ";";

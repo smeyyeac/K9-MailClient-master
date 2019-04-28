@@ -1618,3 +1618,4 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
         }
     }
 }
+

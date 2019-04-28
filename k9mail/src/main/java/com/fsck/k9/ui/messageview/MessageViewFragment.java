@@ -230,9 +230,9 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
     private void showMessage(MessageViewInfo messageViewInfo) {
         hideKeyboard();
 
-        boolean handledByCryptoPresenter = messageCryptoPresenter.maybeHandleShowMessage(
-                mMessageView, mAccount, messageViewInfo);
+        boolean handledByCryptoPresenter = messageCryptoPresenter.maybeHandleShowMessage(mMessageView, mAccount, messageViewInfo);
         if (!handledByCryptoPresenter) {
+//            Log.w("GetirMViewFragment", messageViewInfo.text);
             mMessageView.showMessage(mAccount, messageViewInfo);
             if (mAccount.isOpenPgpProviderConfigured()) {
                 mMessageView.getMessageHeaderView().setCryptoStatusDisabled();

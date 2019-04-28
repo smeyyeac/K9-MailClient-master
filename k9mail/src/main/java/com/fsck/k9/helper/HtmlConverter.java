@@ -2,6 +2,8 @@ package com.fsck.k9.helper;
 
 import android.text.*;
 import android.text.Html.TagHandler;
+import android.util.Log;
+
 import com.fsck.k9.K9;
 
 import org.xml.sax.XMLReader;
@@ -104,6 +106,7 @@ public class HtmlConverter {
      * @return Plain text result.
      */
     public static String htmlToText(final String html) {
+
         return Html.fromHtml(html, null, new HtmlToTextTagHandler()).toString()
                .replace(PREVIEW_OBJECT_CHARACTER, PREVIEW_OBJECT_REPLACEMENT)
                .replace(NBSP_CHARACTER, NBSP_REPLACEMENT);
@@ -1329,6 +1332,7 @@ public class HtmlConverter {
 
     public static String wrapMessageContent(CharSequence messageContent) {
         // Include a meta tag so the WebView will not use a fixed viewport width of 980 px
+        Log.w("GetirHtmlConverter", String.valueOf(messageContent) );
         return "<html><head><meta name=\"viewport\" content=\"width=device-width\"/>" +
                 HtmlConverter.cssStyleTheme() +
                 HtmlConverter.cssStylePre() +

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,19 +39,14 @@ public class KeyResultActivity extends K9Activity implements View.OnClickListene
         publicKeyName = extras.getString("fileName");
         address = extras.getString("sendAddress");
 
-        Log.e("fileName",publicKeyName);
-        Log.e("adresss", address);
-        Log.e("KeyServerResult", String.valueOf(keyServer.getKeyServerPublicKey(address)));
-
-        Log.e("RESULT", address);
-
+        Log.w("ServerKey", String.valueOf(keyServer.getKeyServerPublicKey(address)));
         editPublicKey.setText(String.valueOf(keyServer.getKeyServerPublicKey(address)));
 
     }
 
     public void onClick(View v) { //anahtar oluşturma
-Log.d("resultda","resultda");
-        file.createKeyFile(publicKeyName, String.valueOf(keyServer.getKeyServerPublicKey(address)),"mail");
+        file.createKeyFile(publicKeyName+"_publicKey", String.valueOf(keyServer.getKeyServerPublicKey(address)));
         Toast.makeText(KeyResultActivity.this,  "İndirildi", Toast.LENGTH_LONG).show();
     }
+
 }

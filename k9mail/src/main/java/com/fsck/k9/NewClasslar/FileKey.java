@@ -11,9 +11,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileKey {
-    public void createKeyFile(String keyName, String key, String mail) {
+    public void createKeyFile(String keyName, String key) {
         String mainFile="keyFile";
-        String fileName = mail + "_" + keyName + ".asc";
+        String fileName = keyName + ".asc";
         java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
         keyfile.mkdir();
         Log.e("Dosya Yeri", String.valueOf(Environment.getExternalStorageDirectory().getAbsolutePath()));

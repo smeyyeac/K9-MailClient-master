@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 
 
 public class ProgressDialogFragment extends DialogFragment {
@@ -19,6 +20,8 @@ public class ProgressDialogFragment extends DialogFragment {
         args.putString(ARG_TITLE, title);
         args.putString(ARG_MESSAGE, message);
         fragment.setArguments(args);
+        Log.w("GetirProgessDialogTitle", String.valueOf(title));
+        Log.w("GetirProgessDialogMess", String.valueOf(message));
 
         return fragment;
     }

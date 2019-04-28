@@ -48,8 +48,6 @@ public class KeyServer {
             try {
                 final  String search = strings[0].replaceAll(" ", "%20");
 
-                Log.e("Where" ,    "LookupPublicKey ");
-
                 //construct the address
                 String address = KEYSERVER_LOOKUP_PUBLIC_KEY_ADDRESS + search;
                 URL url = new URL(address);

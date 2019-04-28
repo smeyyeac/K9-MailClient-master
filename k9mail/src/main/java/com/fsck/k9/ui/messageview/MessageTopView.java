@@ -108,17 +108,17 @@ public class MessageTopView extends LinearLayout {
         resetAndPrepareMessageView(messageViewInfo);
 
         ShowPictures showPicturesSetting = account.getShowPictures();
-        boolean automaticallyLoadPictures =
-                shouldAutomaticallyLoadPictures(showPicturesSetting, messageViewInfo.message);
+//        Log.w("GetirMTopViewMes", messageViewInfo.text);
+        boolean automaticallyLoadPictures = shouldAutomaticallyLoadPictures(showPicturesSetting, messageViewInfo.message);
 
         MessageContainerView view = (MessageContainerView) mInflater.inflate(R.layout.message_container,
                 containerView, false);
        containerView.addView(view);
-
+ /*      Log.w("GetirMessTopView",getViewHierarcy(containerView));
         if (getViewHierarcy(containerView)==null) {
             Log.w("messagetopview","nullandık");
         }
-
+*/
         boolean hideUnsignedTextDivider = !account.getCryptoSupportSignOnly();
         view.displayMessageViewContainer(messageViewInfo, new OnRenderingFinishedListener() {
             @Override
@@ -126,11 +126,10 @@ public class MessageTopView extends LinearLayout {
                 displayViewOnLoadFinished(true);
             }
         }, automaticallyLoadPictures, hideUnsignedTextDivider, attachmentCallback);
-
         if (view.hasHiddenExternalImages()) {
             showShowPicturesButton();
         }
-       // Log.e("salakkkkk", String.valueOf(containerView.getChildAt(-1).getContext()));
+        //Log.e("salakkkkk", String.valueOf(containerView.getChildAt(0).getContext()));
 
     }
 

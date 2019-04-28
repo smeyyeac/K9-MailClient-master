@@ -134,8 +134,8 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
         textPrivate.setText(armoredKeyPair.privateKey());
 
         filekey=new FileKey();
-        filekey.createKeyFile("publicKey", armoredKeyPair.publicKey(),email);
-        filekey.createKeyFile("privateKey", armoredKeyPair.privateKey(),email);
+        filekey.createKeyFile(email+"_publicKey", armoredKeyPair.publicKey());
+        filekey.createKeyFile(email+"_privateKey", armoredKeyPair.privateKey());
     }
 
 }

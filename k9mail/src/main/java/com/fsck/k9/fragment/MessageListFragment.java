@@ -1946,6 +1946,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
                 }
 
                 holder.subject.setTypeface(Typeface.create(holder.subject.getTypeface(), maybeBoldTypeface));
+                Log.w("GetirMessageListFragSub", subject);
                 holder.subject.setText(subject);
             }
 
@@ -1955,6 +1956,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         private String getPreview(Cursor cursor) {
             String previewTypeString = cursor.getString(PREVIEW_TYPE_COLUMN);
             DatabasePreviewType previewType = DatabasePreviewType.fromDatabaseValue(previewTypeString);
+            Log.w("GetirMessageListFrag1", previewTypeString);
 
             switch (previewType) {
                 case NONE:
@@ -1965,6 +1967,8 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
                     return getString(R.string.preview_encrypted);
                 }
                 case TEXT: {
+                    Log.w("GetirMessageListFrag2", previewTypeString);
+
                     return cursor.getString(PREVIEW_COLUMN);
                 }
             }
@@ -2047,6 +2051,7 @@ public class MessageListFragment extends Fragment implements OnItemClickListener
         FooterViewHolder holder = (FooterViewHolder) mFooterView.getTag();
 
         if (text != null) {
+            Log.w("GetirMesListFragText", text);
             holder.main.setText(text);
             holder.main.setVisibility(View.VISIBLE);
         } else {

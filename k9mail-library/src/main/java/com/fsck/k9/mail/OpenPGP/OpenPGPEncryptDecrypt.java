@@ -102,7 +102,6 @@ public class OpenPGPEncryptDecrypt {
         }  catch (PGPException e) {
             e.printStackTrace();
         }
-        Log.e("Getir encrypt", encryptMessage );
         return encryptMessage;
 
     }
@@ -146,15 +145,15 @@ public class OpenPGPEncryptDecrypt {
         return null;
     }
 
-    public static String decrypted(String email){
+    public static String decrypted(String email, String encryptedMessage){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         PGPSecretKey keys = null;
         PGPPrivateKey privateKey = null;
         String decryptMessage = null;
 
-        String encryptedMessage = null;
+        //String encryptedMessage = null;
 
-        encryptedMessage = OpenPGPEncryptDecrypt.readDownloadFile("encrypted");
+        //encryptedMessage = OpenPGPEncryptDecrypt.readDownloadFile("encrypted");
 
         Log.e("Getir encrypt", encryptedMessage);
         try {
@@ -188,31 +187,6 @@ public class OpenPGPEncryptDecrypt {
             e.printStackTrace();
         }
         return decryptMessage;
-    }
-
-    public static String readDownloadFile(String Name)  {
-
-        String mainFile="Download";
-        String fileName = Name + ".asc";
-        java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
-        keyfile.mkdir();
-        File file = new File(keyfile, fileName);
-        StringBuilder text = new StringBuilder();
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            br.close();
-        } catch (IOException e) {
-            Log.e("hata",e.toString());
-            //You'll need to add proper error handling here
-        }
-        return text.toString();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.fsck.k9.activity;
 
 
+import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -14,10 +15,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.K9;
 import com.fsck.k9.Preferences;
+import com.fsck.k9.R;
 import com.fsck.k9.controller.MessagingController;
 import com.fsck.k9.controller.MessagingListener;
 import com.fsck.k9.helper.RetainFragment;
@@ -29,6 +35,8 @@ import com.fsck.k9.ui.crypto.MessageCryptoCallback;
 import com.fsck.k9.ui.crypto.MessageCryptoHelper;
 import com.fsck.k9.ui.message.LocalMessageExtractorLoader;
 import com.fsck.k9.ui.message.LocalMessageLoader;
+
+import org.jdom2.Content;
 import org.openintents.openpgp.OpenPgpDecryptionResult;
 
 
@@ -368,6 +376,8 @@ public class MessageLoaderHelper {
             if (id != DECODE_MESSAGE_LOADER_ID) {
                 throw new IllegalStateException("loader id must be message decoder id");
             }
+            Log.w("Getir BurayaGeldimi", "mLoaderHelper");
+
             return new LocalMessageExtractorLoader(context, localMessage, messageCryptoAnnotations);
         }
 
@@ -440,16 +450,13 @@ public class MessageLoaderHelper {
         }
     };
 
-
     // callback interface
 
     public interface MessageLoaderCallbacks {
         void onMessageDataLoadFinished(LocalMessage message);
         void onMessageDataLoadFailed();
-
         void onMessageViewInfoLoadFinished(MessageViewInfo messageViewInfo);
         void onMessageViewInfoLoadFailed(MessageViewInfo messageViewInfo);
-
         void setLoadingProgress(int current, int max);
 
         void startIntentSenderForMessageLoaderHelper(IntentSender si, int requestCode, Intent fillIntent, int flagsMask,

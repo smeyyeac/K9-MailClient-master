@@ -164,11 +164,11 @@ public class OpenPGPSignature {
         Log.e("dfgddb", text.toString());
         return text.toString();
     }
-    public static String dogrula(String message, String mFrom){
+
+    public static String dogrula(String signatureText, String message, String mFrom){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        String imzalanmis = readDownloadFile("signature");
         InputStream mesajj = new ByteArrayInputStream(message.getBytes());
-        InputStream sign = new ByteArrayInputStream(imzalanmis.getBytes());
+        InputStream sign = new ByteArrayInputStream(signatureText.getBytes());
 
         PGPPublicKey keys = null;
         try {
@@ -179,7 +179,6 @@ public class OpenPGPSignature {
         } catch (PGPException e) {
             e.printStackTrace();
         }
-
         return String.valueOf(verify(mesajj, sign, keys));
     }
     public static String readKeyFile(String keyName) {

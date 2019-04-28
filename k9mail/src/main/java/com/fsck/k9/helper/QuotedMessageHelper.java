@@ -322,7 +322,7 @@ public class QuotedMessageHelper {
             quotedText.append("\r\n");
 
             quotedText.append(body);
-
+            Log.w("GetirQuotedMHelperText", quotedText.toString());
             return quotedText.toString();
         } else {
             // Shouldn't ever happen.
@@ -342,6 +342,7 @@ public class QuotedMessageHelper {
                 if (K9.DEBUG) {
                     Log.d(K9.LOG_TAG, "getBodyTextFromMessage: HTML requested, HTML found.");
                 }
+                Log.w("GetirQuotedMHelperText2", MessageExtractor.getTextFromPart(part));
                 return MessageExtractor.getTextFromPart(part);
             }
 
@@ -351,6 +352,8 @@ public class QuotedMessageHelper {
                     Log.d(K9.LOG_TAG, "getBodyTextFromMessage: HTML requested, text found.");
                 }
                 String text = MessageExtractor.getTextFromPart(part);
+                Log.w("GetirQuotedMHelperText3", text);
+
                 return HtmlConverter.textToHtml(text);
             }
         } else if (format == SimpleMessageFormat.TEXT) {
@@ -360,6 +363,8 @@ public class QuotedMessageHelper {
                 if (K9.DEBUG) {
                     Log.d(K9.LOG_TAG, "getBodyTextFromMessage: Text requested, text found.");
                 }
+                Log.w("GetirQuotedMHelperText4", MessageExtractor.getTextFromPart(part));
+
                 return MessageExtractor.getTextFromPart(part);
             }
 
@@ -369,6 +374,8 @@ public class QuotedMessageHelper {
                     Log.d(K9.LOG_TAG, "getBodyTextFromMessage: Text requested, HTML found.");
                 }
                 String text = MessageExtractor.getTextFromPart(part);
+                Log.w("GetirQuotedMHelperText5", text);
+                Log.w("GetirQuotedMHelperText5", HtmlConverter.htmlToText(text));
                 return HtmlConverter.htmlToText(text);
             }
         }
