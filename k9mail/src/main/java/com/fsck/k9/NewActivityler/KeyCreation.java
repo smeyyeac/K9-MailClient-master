@@ -1,6 +1,7 @@
 package com.fsck.k9.NewActivityler;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fsck.k9.NewClasslar.OpenPGP;
 import com.fsck.k9.NewClasslar.FileKey;
@@ -37,8 +39,7 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
    // private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(OpenPGP.class);
    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
    private EditText editKeySize,editName,editEmail,editParola;
-   private TextView textPublic,textPrivate;
-   private  Button buttonAnahtar,gozat;
+   private  Button buttonAnahtar;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +49,11 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
         editName = (EditText) findViewById(R.id.editName);
         editEmail = (EditText) findViewById(R.id.editEmail);
         editParola = (EditText) findViewById(R.id.editParola);
-        textPublic = (TextView) findViewById(R.id.textViewPublic);
-        textPrivate = (TextView) findViewById(R.id.textViewPrivate);
+        //textPublic = (TextView) findViewById(R.id.textViewPublic);
+        //textPrivate = (TextView) findViewById(R.id.textViewPrivate);
         buttonAnahtar = (Button) findViewById(R.id.buttonAnahtar);
-        gozat=(Button) findViewById(R.id.button2);
 
         findViewById(R.id.buttonAnahtar).setOnClickListener(this);
-        findViewById(R.id.button2).setOnClickListener(this);
 
         //dosya icin eklendi
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -78,30 +77,8 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) { //anahtar oluşturma
         anahtar_olustur();
-       // showPickAttachmentDialog(1);
-       /* try {
-            generateKeysAndEncryptAndDecryptMessage();
-            e.printStackTrace();
-        } catch (SignatureException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-    }
-    public void showPickAttachmentDialog(int requestCode) {
-        requestCode |= 1;
-
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("*/*");
-        Boolean isInSubActivity = true;
-
-        startActivityForResult(Intent.createChooser(i, null), requestCode);
+        final Context context = this;
+        Toast.makeText(context,  "Anahtar çiftiniz oluşturulmuştur.", Toast.LENGTH_LONG).show();
     }
 
     public void anahtar_olustur(){
@@ -109,10 +86,6 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
         String name =  editName.getText().toString();
         String email = editEmail.getText().toString();
         String parola = editParola.getText().toString();
-        /*final int keySize = 2048;
-        final String name =  "ben";
-        final String email = "saruhanur@gmail.com";
-        final String parola = "saruhan";*/
 
         OpenPGP.ArmoredKeyPair armoredKeyPair = null;
 
@@ -122,20 +95,14 @@ public class KeyCreation extends K9Activity implements View.OnClickListener{
         } catch (PGPException e) {
             e.printStackTrace();
             Log.e("Hata", "Buttona bastık try");
-            textPublic.setText("Cachte");
         }
 
         assertThat(armoredKeyPair).hasNoNullFieldsOrProperties();
 
-        //LOGGER.info("java's private key ring:\n" + armoredKeyPair.privateKey());
-        //LOGGER.info("java's public key ring:\n" + armoredKeyPair.publicKey());
-
-        textPublic.setText(armoredKeyPair.publicKey());
-        textPrivate.setText(armoredKeyPair.privateKey());
-
         filekey=new FileKey();
         filekey.createKeyFile(email+"_publicKey", armoredKeyPair.publicKey());
         filekey.createKeyFile(email+"_privateKey", armoredKeyPair.privateKey());
+
     }
 
 }

@@ -35,31 +35,31 @@ public class KeySearch extends K9Activity implements View.OnClickListener {
 
         findViewById(R.id.buttonSearch).setOnClickListener(this);
     }
-        public void onClick(View v) { //anahtar oluşturma
-            final ArrayList<String> result = new ArrayList<>();
+    public void onClick(View v) { //anahtar oluşturma
+        final ArrayList<String> result = new ArrayList<>();
 
-            String name =  editSearch.getText().toString();
-            result.addAll(keyServer.keyServerLookup(name));
+        String name =  editSearch.getText().toString();
+        result.addAll(keyServer.keyServerLookup(name));
 
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, result);
-            listViewSearch.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, result);
+        listViewSearch.setAdapter(adapter);
 
-            listViewSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    int size = result.get(position).replaceAll("\\s+","").length();
-                    String addres =  result.get(position).replaceAll("\\s+","").substring(size-16 , size);
-                    String publicKeyName = publicKeyMailName(result.get(position));
-                    //Toast.makeText(KeyServerSearchActivity.this, result.get(position).replaceAll("\\s+","").substring(size-16 , size)+ "sectin", Toast.LENGTH_LONG).show();
-                    Intent i = new Intent(KeySearch.this, KeyResultActivity.class);
-                    i.putExtra("sendAddress",addres);
-                    i.putExtra("fileName", publicKeyName);
-                    startActivity(i);
-                }
+        listViewSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int size = result.get(position).replaceAll("\\s+","").length();
+                String addres =  result.get(position).replaceAll("\\s+","").substring(size-16 , size);
+                String publicKeyName = publicKeyMailName(result.get(position));
+                //Toast.makeText(KeyServerSearchActivity.this, result.get(position).replaceAll("\\s+","").substring(size-16 , size)+ "sectin", Toast.LENGTH_LONG).show();
+                Intent i = new Intent(KeySearch.this, KeyResultActivity.class);
+                i.putExtra("sendAddress",addres);
+                i.putExtra("fileName", publicKeyName);
+                startActivity(i);
+            }
 
-            });
-        }
+        });
+    }
 
 
     private static String publicKeyMailName(String search) {

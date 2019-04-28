@@ -25,6 +25,7 @@
         android:layout_height="611dp"
         android:layout_below="@+id/buttonSearch"
         android:layout_marginTop="1dp"
-        android:background="@color/materialcolorpicker__lightgrey" />
+        android:background="@color/materialcolorpicker__lightgrey"
+        />
 
 </RelativeLayout>
