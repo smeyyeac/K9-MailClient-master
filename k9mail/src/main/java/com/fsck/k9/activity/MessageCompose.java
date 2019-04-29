@@ -156,10 +156,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final int REQUEST_MASK_LOADER_HELPER = (1<<9);
     private static final int REQUEST_MASK_ATTACHMENT_PRESENTER = (1<<10);
     private static final int REQUEST_MASK_MESSAGE_BUILDER = (1<<11);
-    boolean aktiflikimza=false;
-    boolean aktifliksifre=false;
-    boolean aktiflikimzasifre=false;
-    private String keyParola=null;
+    boolean aktiflikimza = false;
+    boolean aktifliksifre = false;
+    boolean aktiflikimzasifre = false;
+    private String keyParola = null;
     /**
      * Regular expression to remove the first localized "Re:" prefix in subjects.
      *
@@ -1020,15 +1020,15 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.send:
-                if(aktiflikimza==true) {
+                if(aktiflikimza == true) {
                    FileKey.createSignatureFile(OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters(), keyParola));
-                    Log.e("getir sifre",keyParola);
+                    Log.e("Getirsifre", keyParola);
                     addSignatureFile();
                     checkToSendMessage();
                     //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
                     break;
                 }
-                else if (aktifliksifre==true) {
+                else if (aktifliksifre == true) {
                     Address[] addresses = new Address[1];
                     addresses[0] = recipientPresenter.getToAddresses().get(0);
                     String messageTo =  Address.pack(addresses).toLowerCase();
@@ -1038,6 +1038,16 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     mMessageContentView.setCharacters("Şifreli mesaj gönderilmiştir.");
                     checkToSendMessage();
                     break;
+                }else if (aktiflikimzasifre == true){
+                    FileKey.createSignatureFile(OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters(), keyParola));
+                    Address[] addresses = new Address[1];
+                    addresses[0] = recipientPresenter.getToAddresses().get(0);
+                    String messageTo =  Address.pack(addresses).toLowerCase();
+                    Log.e("MessageTo", messageTo);
+                    FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters()));
+                    addEncryptedFile();
+                    mMessageContentView.setCharacters("Şifreli mesaj gönderilmiştir.");
+                    addSignatureFile();
                 }
                 else{
                     checkToSendMessage();
@@ -1079,7 +1089,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             case R.id.message_signature_encrpt:
                 if(item.isChecked() ){
                     item.setChecked(false);
-                    aktiflikimzasifre=false;
+                    aktiflikimzasifre = false;
                     Toast.makeText(MessageCompose.this,  "Şifreleme ve İmzalama  kapatıldı.", Toast.LENGTH_LONG).show();
                     break;
                 }
@@ -1087,6 +1097,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     item.setChecked(true);
                     aktiflikimzasifre=true;
                     Toast.makeText(MessageCompose.this,  "Şifreleme ve İmzalama aktif" , Toast.LENGTH_LONG).show();
+                    showMyCustomAlertDialog();
                     break;
 
                 }

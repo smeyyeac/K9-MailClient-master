@@ -76,6 +76,7 @@ public class MessageViewInfoExtractor {
     private static String encryptedMessage = "";
     private static List<AttachmentViewInfo> attachmentInfosNew;
     private static String signatureResult = "";
+    private static Boolean encryptResult = false;
 
     public static MessageViewInfoExtractor getInstance() {
         Context context = Globals.getContext();
@@ -86,7 +87,7 @@ public class MessageViewInfoExtractor {
 
     @VisibleForTesting
     MessageViewInfoExtractor(Context context, AttachmentInfoExtractor attachmentInfoExtractor,
-            HtmlSanitizer htmlSanitizer) {
+                             HtmlSanitizer htmlSanitizer) {
         this.context = context;
         this.attachmentInfoExtractor = attachmentInfoExtractor;
         this.htmlSanitizer = htmlSanitizer;
@@ -141,7 +142,7 @@ public class MessageViewInfoExtractor {
     }
 
     private ViewableExtractedText extractViewableAndAttachments(List<Part> parts,
-            List<AttachmentViewInfo> attachmentInfos) throws MessagingException {
+                                                                List<AttachmentViewInfo> attachmentInfos) throws MessagingException {
         ArrayList<Viewable> viewableParts = new ArrayList<>();
         ArrayList<Part> attachments = new ArrayList<>();
 
@@ -154,10 +155,20 @@ public class MessageViewInfoExtractor {
 
         attachmentInfosNew = attachmentInfos;
         decryptedMessage = findAttachmentEncrypt();
+        encryptResult = booleanAttachmentEncrypt();
 
         return extractTextFromViewables(viewableParts);
     }
-
+    public Boolean booleanAttachmentEncrypt(){
+        if(attachmentInfosNew.size() != 0) {
+            for (int i = 0; i < attachmentInfosNew.size(); i++) {
+                if (attachmentInfosNew.get(i).displayName.equals("encrypted.asc")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public String findAttachmentEncrypt(){
         byte[] decodedBytes = new byte[0];
         if(attachmentInfosNew.size() != 0){
@@ -299,20 +310,27 @@ public class MessageViewInfoExtractor {
             if(!decryptedMessage.equals("")){
                 content = HtmlConverter.wrapMessageContent(html.append("Şifreli Mesajınız: " + decryptedMessage));
             }else {
-               content = HtmlConverter.wrapMessageContent(html);
+                content = HtmlConverter.wrapMessageContent(html);
             }
 
             if (booleanAttachmentSignature()){
-                findAttachmentSignature();
+                if(encryptResult){
+                    dogrulaText = decryptedMessage;
+                    findAttachmentSignature();
+
+                }else{
+                    findAttachmentSignature();
+                }
+
             }
 
             String sanitizedHtml = htmlSanitizer.sanitize(content);
-
             return new ViewableExtractedText(text.toString(), sanitizedHtml);
         } catch (Exception e) {
             throw new MessagingException("Couldn't extract viewable parts", e);
         }
     }
+
 
     public Boolean booleanAttachmentSignature(){
         if(attachmentInfosNew.size() != 0) {
