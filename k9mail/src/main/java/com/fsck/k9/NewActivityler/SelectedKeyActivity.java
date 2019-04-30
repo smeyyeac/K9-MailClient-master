@@ -8,10 +8,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fsck.k9.R;
@@ -27,30 +31,44 @@ public class SelectedKeyActivity extends K9Activity implements View.OnClickListe
         private Button gozat;
         private AttachmentPresenter attachmentPresenter;
         private AttachmentPresenter.AttachmentMvpView attachmentMvpView;
-
+        private EditText keyAd;
+        private ListView keyLists;
+        private TextView textView;
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.selected_key);
 
             gozat = (Button) findViewById(R.id.keyselected);
+            keyAd = (EditText) findViewById(R.id.editText);
+            keyLists = (ListView) findViewById(R.id.anahtarList);
+            textView = (TextView) findViewById(R.id.keyShow);
 
             findViewById(R.id.keyselected).setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            showPickAttachmentDialog(1);
-        }
-        public void showPickAttachmentDialog(int requestCode) {
-            requestCode |= 1;
+            String path = Environment.getExternalStorageDirectory().getPath() + "/keyFile/";
+            Log.d("Files", "Path: " + path);
+            File f = new File(path);
+            File file[] = f.listFiles();
+            Editable ara = keyAd.getText();
+            ArrayList<String> list = new ArrayList();
+            for (int i = 0; i < file.length; i++) {
 
-            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-            i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            i.addCategory(Intent.CATEGORY_OPENABLE);
-            i.setType("*/*");
-            Boolean isInSubActivity = true;
+                if (file[i].getName().contains(ara))
+                    list.add(file[i].getName());
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
+            keyLists.setAdapter(adapter );
 
-            startActivityForResult(Intent.createChooser(i, null), requestCode);
+            keyLists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    String s = keyLists.getItemAtPosition(i).toString();
+                    textView.setText(s);
+                }
+            });
         }
 
     }

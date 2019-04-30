@@ -270,6 +270,7 @@
             android:name=".NewActivityler.SelectedKeyActivity"
             android:configChanges="locale"
             android:label="@string/secili_anah"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity
             android:name=".NewActivityler.KeySearch"
