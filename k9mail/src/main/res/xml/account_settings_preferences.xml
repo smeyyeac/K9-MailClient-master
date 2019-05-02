@@ -484,6 +484,9 @@
         <Preference
             android:title="@string/secili_anah"
             android:key="@string/secili_anah" />
+        <Preference
+            android:title="@string/server_share"
+            android:key="@string/server_share" />
 
     </PreferenceScreen>
 

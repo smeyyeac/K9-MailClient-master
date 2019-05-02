@@ -267,6 +267,11 @@
             android:label="@string/anahtar_olustur"
             />
         <activity
+            android:name=".NewActivityler.ServerShare"
+            android:configChanges="locale"
+            android:label="@string/server_share"
+            />
+        <activity
             android:name=".NewActivityler.SelectedKeyActivity"
             android:configChanges="locale"
             android:label="@string/secili_anah"

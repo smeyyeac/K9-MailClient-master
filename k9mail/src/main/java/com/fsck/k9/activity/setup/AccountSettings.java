@@ -36,6 +36,7 @@ import com.fsck.k9.Account.ShowPictures;
 import com.fsck.k9.ColorPicker;
 import com.fsck.k9.K9;
 import com.fsck.k9.NewActivityler.KeySearch;
+import com.fsck.k9.NewActivityler.ServerShare;
 import com.fsck.k9.NotificationSetting;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
@@ -786,6 +787,16 @@ public class AccountSettings<preferenceScreen> extends K9PreferenceActivity {
                 return true;
             }
         });
+        Preference serverShareButton = findPreference(getString(R.string.server_share));
+        serverShareButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intocan = new Intent(AccountSettings.this, ServerShare.class);
+                startActivity(intocan);
+                return true;
+            }
+        });
+
 
 
         mSearchScreen = (PreferenceScreen) findPreference(PREFERENCE_SCREEN_SEARCH);
