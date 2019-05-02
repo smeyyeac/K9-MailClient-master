@@ -39,6 +39,7 @@ import com.fsck.k9.K9.SplitViewMode;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
 import com.fsck.k9.activity.compose.MessageActions;
+import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.activity.misc.SwipeGestureDetector.OnSwipeGestureListener;
 import com.fsck.k9.activity.setup.AccountSettings;
 import com.fsck.k9.activity.setup.FolderSettings;
@@ -46,6 +47,7 @@ import com.fsck.k9.activity.setup.Prefs;
 import com.fsck.k9.fragment.MessageListFragment;
 import com.fsck.k9.fragment.MessageListFragment.MessageListFragmentListener;
 import com.fsck.k9.helper.ParcelableUtil;
+import com.fsck.k9.mailstore.MessageViewInfoExtractor;
 import com.fsck.k9.mailstore.StorageManager;
 import com.fsck.k9.preferences.StorageEditor;
 import com.fsck.k9.search.LocalSearch;
@@ -281,6 +283,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 R.id.message_list_container);
         mMessageViewFragment = (MessageViewFragment) fragmentManager.findFragmentById(
                 R.id.message_view_container);
+        Log.e("GetirMListFindFragment",  String.valueOf(R.id.message_view_container));
     }
 
     /**
@@ -291,6 +294,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
     private void initializeFragments() {
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.addOnBackStackChangedListener(this);
+        Log.w("GetirMessageList", "initialize");
 
         boolean hasMessageListFragment = (mMessageListFragment != null);
 
@@ -299,6 +303,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
             mMessageListFragment = MessageListFragment.newInstance(mSearch, false,
                     (K9.isThreadedViewEnabled() && !mNoThreading));
             ft.add(R.id.message_list_container, mMessageListFragment);
+            Log.w("GetirMessageList2", "initialize");
             ft.commit();
         }
 
@@ -306,6 +311,8 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
         // so, open the referenced message.
         if (!hasMessageListFragment && mMessageViewFragment == null &&
                 mMessageReference != null) {
+            Log.w("GetirMessageList3", "initialize");
+
             openMessage(mMessageReference);
         }
     }
@@ -373,10 +380,13 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
             case SPLIT_VIEW: {
                 mMessageListWasDisplayed = true;
                 if (mMessageViewFragment == null) {
+                    Log.w("GetirMList", "SPLIT_VIEW da");
                     showMessageViewPlaceHolder();
                 } else {
                     MessageReference activeMessage = mMessageViewFragment.getMessageReference();
                     if (activeMessage != null) {
+                        Log.w("GetirMList else", "SPLIT_VIEW da");
+
                         mMessageListFragment.setActiveMessage(activeMessage);
                     }
                 }
@@ -807,11 +817,15 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 return true;
             }
             case R.id.toggle_message_view_theme: {
+                Log.e("Getir List1", "onOption");
+
                 onToggleTheme();
                 return true;
             }
             // MessageList
             case R.id.check_mail: {
+                Log.e("Getir List2", "onOption");
+
                 mMessageListFragment.checkMail();
                 return true;
             }
@@ -864,6 +878,8 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 return true;
             }
             case R.id.mark_all_as_read: {
+                Log.e("Getir List2", "onOption");
+
                 mMessageListFragment.confirmMarkAllAsRead();
                 return true;
             }
@@ -873,10 +889,14 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
             }
             // MessageView
             case R.id.next_message: {
+                Log.e("Getir List3", "onOption");
+
                 showNextMessage();
                 return true;
             }
             case R.id.previous_message: {
+                Log.e("Getir List4", "onOption");
+
                 showPreviousMessage();
                 return true;
             }

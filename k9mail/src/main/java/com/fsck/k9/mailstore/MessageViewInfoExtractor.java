@@ -43,6 +43,7 @@ import com.fsck.k9.ui.crypto.MessageCryptoSplitter;
 import com.fsck.k9.ui.crypto.MessageCryptoSplitter.CryptoMessageParts;
 import com.fsck.k9.ui.messageview.AttachmentView;
 import com.fsck.k9.ui.messageview.MessageTopView;
+import com.fsck.k9.ui.messageview.MessageViewFragment;
 
 
 import org.bouncycastle.util.encoders.Base64;

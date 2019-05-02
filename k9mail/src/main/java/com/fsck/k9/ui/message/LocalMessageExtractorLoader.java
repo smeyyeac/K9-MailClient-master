@@ -54,6 +54,7 @@ public class LocalMessageExtractorLoader extends AsyncTaskLoader<MessageViewInfo
         try {
             Log.w("Getir localMesajExrac", message.getSubject());
             return messageViewInfoExtractor.extractMessageForView(message, annotations);
+
         } catch (Exception e) {
             Log.e(K9.LOG_TAG, "Error while decoding message", e);
             return null;

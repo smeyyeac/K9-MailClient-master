@@ -2,9 +2,11 @@ package com.fsck.k9.ui.messageview;
 
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
 import android.app.Fragment;
@@ -13,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.IntentSender.SendIntentException;
+import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,9 +29,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fsck.k9.Account;
+import com.fsck.k9.Globals;
 import com.fsck.k9.K9;
 import com.fsck.k9.Preferences;
 import com.fsck.k9.R;
@@ -43,13 +49,22 @@ import com.fsck.k9.fragment.ProgressDialogFragment;
 import com.fsck.k9.helper.FileBrowserHelper;
 import com.fsck.k9.helper.FileBrowserHelper.FileBrowserFailOverCallback;
 import com.fsck.k9.mail.Flag;
+import com.fsck.k9.mail.Message;
+import com.fsck.k9.mail.MessagingException;
 import com.fsck.k9.mailstore.AttachmentViewInfo;
 import com.fsck.k9.mailstore.LocalMessage;
+import com.fsck.k9.mailstore.LocalStore;
 import com.fsck.k9.mailstore.MessageViewInfo;
+import com.fsck.k9.mailstore.MessageViewInfoExtractor;
+import com.fsck.k9.message.extractors.AttachmentCounter;
+import com.fsck.k9.ui.message.LocalMessageExtractorLoader;
 import com.fsck.k9.ui.messageview.CryptoInfoDialog.OnClickShowCryptoKeyListener;
 import com.fsck.k9.ui.messageview.MessageCryptoPresenter.MessageCryptoMvpView;
 import com.fsck.k9.view.MessageCryptoDisplayStatus;
 import com.fsck.k9.view.MessageHeader;
+
+import org.assertj.core.internal.cglib.core.Local;
+import org.openintents.openpgp.util.OpenPgpApi;
 
 
 public class MessageViewFragment extends Fragment implements ConfirmationDialogFragmentListener,
@@ -84,6 +99,8 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
     private Handler handler = new Handler();
     private MessageLoaderHelper messageLoaderHelper;
     private MessageCryptoPresenter messageCryptoPresenter;
+    public String keyPassword = null;
+
 
     /**
      * Used to temporarily store the destination folder for refile operations if a confirmation
@@ -195,6 +212,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
         String messageReferenceString = arguments.getString(ARG_REFERENCE);
         MessageReference messageReference = MessageReference.parse(messageReferenceString);
 
+
         displayMessage(messageReference);
     }
 
@@ -232,7 +250,6 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
 
         boolean handledByCryptoPresenter = messageCryptoPresenter.maybeHandleShowMessage(mMessageView, mAccount, messageViewInfo);
         if (!handledByCryptoPresenter) {
-//            Log.w("GetirMViewFragment", messageViewInfo.text);
             mMessageView.showMessage(mAccount, messageViewInfo);
             if (mAccount.isOpenPgpProviderConfigured()) {
                 mMessageView.getMessageHeaderView().setCryptoStatusDisabled();
@@ -241,9 +258,52 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
             }
         }
     }
+/*    private void showMessage(MessageViewInfo messageViewInfo) {
+        hideKeyboard();
 
+        boolean handledByCryptoPresenter = messageCryptoPresenter.maybeHandleShowMessage(mMessageView, mAccount, messageViewInfo);
+
+         if (!handledByCryptoPresenter) {
+            if(findEncyptedPassword(messageViewInfo)){
+                showDialog();
+                Log.w("GetirMViewFragment", "showMessage");
+                mMessageView.showMessage(mAccount, messageViewInfo);
+                if (mAccount.isOpenPgpProviderConfigured()) {
+                    mMessageView.getMessageHeaderView().setCryptoStatusDisabled();
+                } else {
+                    mMessageView.getMessageHeaderView().hideCryptoStatus();
+                }
+            }else{
+                Log.w("GetirMViewFragment", "showMessage");
+                mMessageView.showMessage(mAccount, messageViewInfo);
+                if (mAccount.isOpenPgpProviderConfigured()) {
+                    mMessageView.getMessageHeaderView().setCryptoStatusDisabled();
+                } else {
+                    mMessageView.getMessageHeaderView().hideCryptoStatus();
+                }
+            }
+
+        }
+    }*/
+    public Boolean findEncyptedPassword(MessageViewInfo messageViewInfo) {
+        if (messageViewInfo.attachments.size() != 0) {
+            for (int i = 0; i < messageViewInfo.attachments.size(); i++) {
+                if (messageViewInfo.attachments.get(i).displayName.equals("encrypted.asc")) {
+                    return true;
+                }
+            }
+        }else{
+            return false;
+        }
+        return false;
+    }
     private void displayHeaderForLoadingMessage(LocalMessage message) {
         mMessageView.setHeaders(message, mAccount);
+
+        Log.e("Getir MViewFragment"," displayHeader");
+        //Log.e("Getir MViewFragmHas", String.valueOf(message.hasAttachments()));
+        //Log.e("Getir MViewFragmCount", String.valueOf(message.getAttachmentCount()));
+
         if (mAccount.isOpenPgpProviderConfigured()) {
             mMessageView.getMessageHeaderView().setCryptoStatusLoading();
         }
@@ -334,6 +394,9 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
             mController.setFlag(mAccount, mMessage.getFolder().getName(),
                     Collections.singletonList(mMessage), Flag.FLAGGED, newState);
             mMessageView.setHeaders(mMessage, mAccount);
+            Log.e("Getir MViewFragment","onToggleFlagged");
+
+
         }
     }
 
@@ -466,6 +529,8 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
             String subject = mMessage.getSubject();
             displayMessageSubject(subject);
             mFragmentListener.updateMenu();
+            Log.e("Getir MViewFragment","onToggleRead");
+
         }
     }
 
@@ -728,11 +793,14 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
 
         @Override
         public void onMessageViewInfoLoadFinished(MessageViewInfo messageViewInfo) {
+            Log.w("Getir MViewFragShow1", "loadfinish");
             showMessage(messageViewInfo);
         }
 
         @Override
         public void onMessageViewInfoLoadFailed(MessageViewInfo messageViewInfo) {
+            Log.w("Getir MViewFragShow2", "Failed");
+
             showMessage(messageViewInfo);
         }
 
@@ -812,5 +880,33 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
 
     private AttachmentController getAttachmentController(AttachmentViewInfo attachment) {
         return new AttachmentController(mController, downloadManager, this, attachment);
+    }
+
+
+    public void showDialog() {
+
+        final Context[] context = {Globals.getContext()};
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.parola_customdialog);
+
+
+        Button btnKaydet = (Button) dialog.findViewById(R.id.save);
+        final TextView[] parola = {(TextView) dialog.findViewById(R.id.parola)};
+        final TextView parolagir = (TextView) dialog.findViewById(R.id.parolagir);
+
+        btnKaydet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(parolagir.equals("")){
+                    Toast.makeText(context[0],  "Lütfen anahtarınız için sifrenizi giriniz.", Toast.LENGTH_LONG).show();
+                }else {
+                    keyPassword = parolagir.getText().toString();
+                    Log.w("Getir parola fonk", keyPassword);
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.show();
+
     }
 }

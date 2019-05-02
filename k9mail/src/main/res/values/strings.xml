@@ -1254,9 +1254,10 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="name">Name</string>
     <string name="email">Email Address</string>
     <string name="parola">Password</string>
+    <string name="serverYayınla">Serverda Yayınla</string>
     <string name="anahtar">Anahtar Oluştur</string>
     <string name="keyCreation_action">key creation</string>
-    <string name="anahtar_olustur">anahtar Oluştur</string>
+    <string name="anahtar_olustur">Anahtar Oluştur</string>
     <string name="anahtarlar">Anahtar</string>
     <string name="anahtar_ara">Anahtar Ara</string>
     <string name="anahtar_indir">Anahtar İndir</string>
@@ -1266,6 +1267,8 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="secili_anah">Anahtar Seç</string>
     <string name="message_encrypt">Şifrele</string>
     <string name="message_signature_encrypt">Şifrele ve imzala</string>
-    <string name="server_share">Server da Paylaş</string>
+    <string name="server_share">Anahtarı Yayınla</string>
+    <string name="bilgilendirme">Serverda Yayınlanmasını İstediğiniz Public Anahtarınızı  Seçiniz</string>
+    <string name="gozat">Gözat</string>
 
 </resources>

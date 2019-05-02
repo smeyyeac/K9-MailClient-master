@@ -86,7 +86,6 @@ public class MessageLoaderHelper {
     @Nullable // make this explicitly nullable, make sure to cancel/ignore any operation if this is null
     private MessageLoaderCallbacks callback;
 
-
     // transient state
     private MessageReference messageReference;
     private Account account;
@@ -96,7 +95,6 @@ public class MessageLoaderHelper {
     private OpenPgpDecryptionResult cachedDecryptionResult;
 
     private MessageCryptoHelper messageCryptoHelper;
-
 
     public MessageLoaderHelper(Context context, LoaderManager loaderManager, FragmentManager fragmentManager,
             @NonNull MessageLoaderCallbacks callback) {
@@ -335,6 +333,7 @@ public class MessageLoaderHelper {
     private void startOrResumeDecodeMessage() {
         LocalMessageExtractorLoader loader =
                 (LocalMessageExtractorLoader) loaderManager.<MessageViewInfo>getLoader(DECODE_MESSAGE_LOADER_ID);
+
         boolean isLoaderStale = (loader == null) || !loader.isCreatedFor(localMessage, messageCryptoAnnotations);
 
         if (isLoaderStale) {
@@ -360,6 +359,7 @@ public class MessageLoaderHelper {
         callback.onMessageViewInfoLoadFinished(messageViewInfo);
     }
 
+
     @NonNull
     private MessageViewInfo createErrorStateMessageViewInfo() {
         boolean isMessageIncomplete = !localMessage.isSet(Flag.X_DOWNLOADED_FULL);
@@ -376,8 +376,7 @@ public class MessageLoaderHelper {
             if (id != DECODE_MESSAGE_LOADER_ID) {
                 throw new IllegalStateException("loader id must be message decoder id");
             }
-            Log.w("Getir BurayaGeldimi", "mLoaderHelper");
-
+            Log.w("Getir mLoaderHelpe", "onCreateLoader");
             return new LocalMessageExtractorLoader(context, localMessage, messageCryptoAnnotations);
         }
 
@@ -386,6 +385,8 @@ public class MessageLoaderHelper {
             if (loader.getId() != DECODE_MESSAGE_LOADER_ID) {
                 throw new IllegalStateException("loader id must be message decoder id");
             }
+            Log.w("Getir MLoaderHelper", "onLoadfinished");
+
             onDecodeMessageFinished(messageViewInfo);
         }
 

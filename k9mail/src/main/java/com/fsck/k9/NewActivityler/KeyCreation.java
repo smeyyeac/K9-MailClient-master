@@ -15,11 +15,13 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fsck.k9.NewClasslar.KeyServer;
 import com.fsck.k9.NewClasslar.OpenPGP;
 import com.fsck.k9.NewClasslar.FileKey;
 import com.fsck.k9.R;
@@ -32,6 +34,7 @@ import org.bouncycastle.openpgp.PGPException;
 //import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.*;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +51,7 @@ public class KeyCreation extends K9Activity implements View.OnClickListener {
     private EditText editName, editEmail, editParola;
     private Button buttonAnahtar;
     private Spinner spinner;
+    private CheckBox checkBoxServer;
     List<String> list;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class KeyCreation extends K9Activity implements View.OnClickListener {
         //textPublic = (TextView) findViewById(R.id.textViewPublic);
         //textPrivate = (TextView) findViewById(R.id.textViewPrivate);
         buttonAnahtar = (Button) findViewById(R.id.buttonAnahtar);
+        checkBoxServer = (CheckBox)findViewById(R.id.serverCheckBox);
 
         findViewById(R.id.buttonAnahtar).setOnClickListener(this);
 
@@ -80,11 +85,10 @@ public class KeyCreation extends K9Activity implements View.OnClickListener {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, list);
             spinner.setAdapter(adapter);
 
-
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("keyyyyy", spinner.getSelectedItem().toString());
+                Log.e("key", spinner.getSelectedItem().toString());
                 keySize = spinner.getSelectedItem().toString();
             }
 
@@ -109,13 +113,18 @@ public class KeyCreation extends K9Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) { //anahtar oluşturma
-        anahtar_olustur();
         final Context context = this;
-        Toast.makeText(context,  "Anahtar çiftiniz oluşturulmuştur.", Toast.LENGTH_LONG).show();
+        if(checkBoxServer.isChecked()){
+            anahtar_olustur();
+            Toast.makeText(context,  "Anahtar çiftiniz oluşturulmuştur.\n Serverda yayınlanmıştır", Toast.LENGTH_LONG).show();
+        }else{
+            anahtar_olustur();
+            Toast.makeText(context,  "Anahtar çiftiniz oluşturulmuştur.", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void anahtar_olustur(){
-     int keySizes = Integer.parseInt(keySize);
+        int keySizes = Integer.parseInt(keySize);
         String name =  editName.getText().toString();
         String email = editEmail.getText().toString();
         String parola = editParola.getText().toString();
@@ -136,7 +145,12 @@ public class KeyCreation extends K9Activity implements View.OnClickListener {
         filekey.createKeyFile(email+"_publicKey", armoredKeyPair.publicKey());
         filekey.createKeyFile(email+"_privateKey", armoredKeyPair.privateKey());
 
+        if (checkBoxServer.isChecked()){
+                Log.e("Getir", "check true");
+                KeyServer.publishPublicKey(armoredKeyPair.publicKey());
 
+
+        }
     }
 
 }

@@ -55,5 +55,4 @@ public class MessageViewInfo {
     public static MessageViewInfo createWithErrorState(Message message, boolean isMessageIncomplete) {
         return new MessageViewInfo(message, isMessageIncomplete, null, null, null, null, null, null, null);
     }
-
 }

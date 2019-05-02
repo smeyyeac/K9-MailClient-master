@@ -4,29 +4,113 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.bouncycastle.bcpg.ArmoredOutputStream;
+import org.bouncycastle.openpgp.PGPKeyRingGenerator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 public class KeyServer {
 
-    private static final String USER_AGENT                  = "Mozilla/5.0";
+    private static final String USER_AGENT                  = "Eposta";
 
     private static final String KEYSERVER_LOOKUP_ADDRESS            = "https://keyserver.ubuntu.com/pks/lookup?search=";
     private static final String KEYSERVER_LOOKUP_PUBLIC_KEY_ADDRESS            = "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x";
 
     private static String publicKey;
+
+    private final static String URL_POST_KEY_ENDPOINT = "https://keyserver.ubuntu.com/pks/add";
+    private static final char PARAMETER_DELIMITER = '&';
+    private static final char PARAMETER_EQUALS_CHAR = '=';
+
+    //Servera Yükleme
+
+    public static  void publishPublicKey (String publicKey) {
+        final String pubKey = publicKey;
+        new Thread () {
+
+            public void run() {
+
+                try {
+                    Log.w("Getir pub", "yayınla");
+                    HashMap<String,String> hmParams = new HashMap<String,String>();
+                    hmParams.put("keytext",pubKey);
+                    String queryString = createQueryStringForParameters(hmParams);
+
+                    URL url = new URL(URL_POST_KEY_ENDPOINT);
+                    HttpURLConnection client = null;
+                    client = (HttpURLConnection) url.openConnection();
+                    client.setRequestMethod("POST");
+                    client.setFixedLengthStreamingMode(queryString.getBytes().length);
+                    client.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    client.setDoOutput(true);
+                    client.setDoInput(true);
+                    client.setReadTimeout(20000);
+                    client.setConnectTimeout(30000);
+
+                    PrintWriter out = new PrintWriter(client.getOutputStream());
+                    out.print(queryString);
+                    out.close();
+
+
+                    // handle issues
+                    int statusCode = client.getResponseCode();
+                    if (statusCode != HttpURLConnection.HTTP_OK) {
+                        // throw some exception
+                        Log.w("PGP","key did not upload: " + statusCode);
+                    }
+
+
+                    client.disconnect();
+                }
+                catch (IOException ioe)
+                {
+                    ioe.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public static String createQueryStringForParameters(Map<String, String> parameters) {
+        StringBuilder parametersAsQueryString = new StringBuilder();
+        if (parameters != null) {
+            boolean firstParameter = true;
+
+            for (String parameterName : parameters.keySet()) {
+                if (!firstParameter) {
+                    parametersAsQueryString.append(PARAMETER_DELIMITER);
+                }
+
+                parametersAsQueryString.append(parameterName)
+                        .append(PARAMETER_EQUALS_CHAR)
+                        .append(URLEncoder.encode(
+                                parameters.get(parameterName)));
+
+                firstParameter = false;
+            }
+        }
+        return parametersAsQueryString.toString();
+    }
+
 
     public String getKeyServerPublicKey(String search) {
         try {

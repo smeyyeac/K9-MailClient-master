@@ -6,7 +6,8 @@
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="222dp"
-        android:layout_height="43dp" />
+        android:layout_height="43dp"
+        android:gravity="center"/>
 
     <EditText
         android:id="@+id/editName"
@@ -40,6 +41,13 @@
         android:ems="10"
         android:hint="@string/parola"
         android:inputType="textPassword" />
+
+    <CheckBox
+        android:id="@+id/serverCheckBox"
+        android:layout_width="222dp"
+        android:layout_height="45dp"
+        android:text="@string/serverYayınla"
+        android:textSize="15sp" />
 
     <Button
         android:id="@+id/buttonAnahtar"

@@ -100,6 +100,7 @@ public class KeyOperation {
                     new BcKeyFingerprintCalculator()
             );
         }
+
         if (Iterators.size(pubKeyRing.getPublicKeys()) < 1) {
             Log.e("hataaaaaaaa","No keys in keyring");
         }
