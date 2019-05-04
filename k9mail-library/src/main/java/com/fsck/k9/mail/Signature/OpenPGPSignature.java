@@ -42,8 +42,8 @@ interface StreamHandler {
 }
 
 public class OpenPGPSignature {
-    private static  PGPPrivateKey pKey = null;
-    private static  String imza = null;
+    private static PGPPrivateKey pKey = null;
+    private static String imza = null;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String signArmoredAscii(PGPPrivateKey privateKey, String data, int signatureAlgo) throws IOException, PGPException {
@@ -51,7 +51,7 @@ public class OpenPGPSignature {
         final PGPSignatureGenerator signatureGenerator = new PGPSignatureGenerator(new BcPGPContentSignerBuilder(privateKey.getPublicKeyPacket().getAlgorithm(), signatureAlgo));
         signatureGenerator.init(org.bouncycastle.openpgp.PGPSignature.BINARY_DOCUMENT, privateKey);
         ByteArrayOutputStream signatureOutput = new ByteArrayOutputStream();
-        try( BCPGOutputStream outputStream = new BCPGOutputStream( new ArmoredOutputStream(signatureOutput)) ) {
+        try (BCPGOutputStream outputStream = new BCPGOutputStream(new ArmoredOutputStream(signatureOutput))) {
             processStringAsStream(data, new StreamHandler() {
                 @Override
                 public void handleStreamBuffer(byte[] buffer, int offset, int length) throws IOException {
@@ -65,6 +65,7 @@ public class OpenPGPSignature {
 
         return signature;
     }
+
     public static boolean verify(InputStream signedData, InputStream signature, PGPPublicKey keys) {
         try {
             signature = PGPUtil.getDecoderStream(signature);
@@ -78,8 +79,9 @@ public class OpenPGPSignature {
             }
             signedData.close();
             return sig.verify();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.e("Getir","verfiy cachh");
             // can we put a logger here please?
             return false;
         }
@@ -91,7 +93,7 @@ public class OpenPGPSignature {
     static void processStream(InputStream is, StreamHandler handler) throws IOException {
         int read;
         byte[] buffer = new byte[BUFFER_SIZE];
-        while( (read = is.read(buffer)) != -1 ) {
+        while ((read = is.read(buffer)) != -1) {
             handler.handleStreamBuffer(buffer, 0, read);
         }
     }
@@ -104,7 +106,7 @@ public class OpenPGPSignature {
         processStream(is, handler);
     }
 
-    public  static String imzalama(String email, String mesaj,String parola){
+    public static String imzalama(String email, String mesaj, String parola) {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         PGPSecretKey keys = null;
 
@@ -125,16 +127,16 @@ public class OpenPGPSignature {
             e.printStackTrace();
         }
         try {
-            imza = OpenPGPSignature.signArmoredAscii(pKey,mesaj , 2);
-            Log.e("imza", imza );
+            imza = OpenPGPSignature.signArmoredAscii(pKey, mesaj, 2);
+            Log.e("imza", imza);
             return imza;
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("ilkcat",e.toString());
+            Log.e("ilkcat", e.toString());
         } catch (PGPException e) {
             e.printStackTrace();
-            Log.e("ikinci",e.toString());
+            Log.e("ikinci", e.toString());
         }
 
         return imza;
@@ -142,7 +144,7 @@ public class OpenPGPSignature {
 
     public static String readDownloadFile(String Name) {
 
-        String mainFile="Download";
+        String mainFile = "Download";
         String fileName = Name + ".asc";
         java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
         keyfile.mkdir();
@@ -158,14 +160,14 @@ public class OpenPGPSignature {
             }
             br.close();
         } catch (IOException e) {
-            Log.e("hata",e.toString());
+            Log.e("hata", e.toString());
             //You'll need to add proper error handling here
         }
         Log.e("dfgddb", text.toString());
         return text.toString();
     }
 
-    public static String dogrula(String signatureText, String message, String mFrom){
+    public static String dogrula(String signatureText, String message, String mFrom) {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         InputStream mesajj = new ByteArrayInputStream(message.getBytes());
         InputStream sign = new ByteArrayInputStream(signatureText.getBytes());
@@ -179,11 +181,13 @@ public class OpenPGPSignature {
         } catch (PGPException e) {
             e.printStackTrace();
         }
+        Log.e("Getir dogrula", String.valueOf(verify(mesajj, sign, keys)));
         return String.valueOf(verify(mesajj, sign, keys));
     }
+
     public static String readKeyFile(String keyName) {
 
-        String mainFile="keyFile";
+        String mainFile = "keyFile";
         String fileName = keyName + ".asc";
         java.io.File keyfile = new java.io.File(Environment.getExternalStorageDirectory().getAbsolutePath(), mainFile);
         keyfile.mkdir();
@@ -199,7 +203,7 @@ public class OpenPGPSignature {
             }
             br.close();
         } catch (IOException e) {
-            Log.e("hata",e.toString());
+            Log.e("hata", e.toString());
             //You'll need to add proper error handling here
         }
         Log.e("dfgddb", text.toString());

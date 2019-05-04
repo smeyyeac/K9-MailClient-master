@@ -156,9 +156,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private static final int REQUEST_MASK_LOADER_HELPER = (1<<9);
     private static final int REQUEST_MASK_ATTACHMENT_PRESENTER = (1<<10);
     private static final int REQUEST_MASK_MESSAGE_BUILDER = (1<<11);
-    boolean aktiflikimza = false;
-    boolean aktifliksifre = false;
-    boolean aktiflikimzasifre = false;
+    public static boolean aktiflikimza = false;
+    public static boolean aktifliksifre = false;
+    public static boolean aktiflikimzasifre = false;
     private String keyParola = null;
     /**
      * Regular expression to remove the first localized "Re:" prefix in subjects.
@@ -206,6 +206,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private MessageBuilder currentMessageBuilder;
     private boolean mFinishAfterDraftSaved;
     private boolean alreadyNotifiedUserOfEmptySubject = false;
+    public  static  String signature = "";
+
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
@@ -1021,9 +1023,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
         switch (item.getItemId()) {
             case R.id.send:
                 if(aktiflikimza == true) {
-                   FileKey.createSignatureFile(OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters(), keyParola));
+                    signature = OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters(), keyParola);
+                    FileKey.createSignatureFile(signature);
                     Log.e("Getirsifre", keyParola);
-                    addSignatureFile();
+                    //addSignatureFile();
                     checkToSendMessage();
                     //OpenPGPSignature.dogrula(mMessageContentView.getCharacters());
                     break;

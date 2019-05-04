@@ -16,6 +16,7 @@ import com.fsck.k9.Account.QuoteStyle;
 import com.fsck.k9.Identity;
 import com.fsck.k9.K9;
 import com.fsck.k9.R;
+import com.fsck.k9.activity.MessageCompose;
 import com.fsck.k9.activity.MessageReference;
 import com.fsck.k9.activity.misc.Attachment;
 import com.fsck.k9.mail.Address;
@@ -32,6 +33,7 @@ import com.fsck.k9.mail.internet.MimeMessageHelper;
 import com.fsck.k9.mail.internet.MimeMultipart;
 import com.fsck.k9.mail.internet.MimeUtility;
 import com.fsck.k9.mail.internet.TextBody;
+import com.fsck.k9.mailstore.BinaryMemoryBody;
 import com.fsck.k9.mailstore.TempFileBody;
 import org.apache.james.mime4j.codec.EncoderUtil;
 import org.apache.james.mime4j.util.MimeUtil;
@@ -152,6 +154,8 @@ public abstract class MessageBuilder {
             // HTML message (with alternative text part)
 
             // This is the compiled MIME part for an HTML message.
+
+
             MimeMultipart composedMimeMessage = createMimeMultipart();
             composedMimeMessage.setSubType("alternative");
             // Let the receiver select either the text or the HTML part.
@@ -159,6 +163,13 @@ public abstract class MessageBuilder {
             composedMimeMessage.addBodyPart(new MimeBodyPart(bodyPlain, "text/plain"));
 //            composedMimeMessage.addBodyPart(new MimeBodyPart(body, "text/html"));
             MimeMessageHelper.setBody(message, composedMimeMessage);
+
+            if(MessageCompose.aktiflikimza){
+                composedMimeMessage.setSubType("signed; micalg=pgp-sha1; protocol=\"application/pgp-signature\"");
+                composedMimeMessage.addBodyPart(new MimeBodyPart(new BinaryMemoryBody(MessageCompose.signature.getBytes(), MimeUtil.ENC_7BIT),
+                        "application/pgp-signature; name=\"signature.asc\""));
+            }
+
 
             if (hasAttachments) {
                 // If we're HTML and have attachments, we have a MimeMultipart container to hold the

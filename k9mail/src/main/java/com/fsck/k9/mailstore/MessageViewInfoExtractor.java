@@ -362,14 +362,16 @@ public class MessageViewInfoExtractor {
                     String mFrom = dogrulamaFrom();
                     String metin = dogrulamaMetni();
                     signatureResult = OpenPGPSignature.dogrula(signatureText, metin, mFrom);
+                    Log.e("Getir signature",OpenPGPSignature.dogrula(signatureText, metin, mFrom));
+                    Log.e("Getir result",signatureResult);
                 }
             }
         }
-
     }
     public static String signaruteResult() {
         return (signatureResult);
     }
+
     public static String dogrulamaMetni() {
         return (dogrulaText);
     }
@@ -388,7 +390,6 @@ public class MessageViewInfoExtractor {
         int startIndex = search.indexOf(startOfBlock) + startOfBlock.length();
         int endIndex = search.indexOf(endOfBlock);
         String result = search.substring(startIndex,endIndex);
-
         return result;
     }
     /**

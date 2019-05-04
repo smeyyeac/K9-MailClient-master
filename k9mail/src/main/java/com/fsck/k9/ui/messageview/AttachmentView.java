@@ -63,8 +63,9 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
 
     public void setAttachment(AttachmentViewInfo attachment) {
         this.attachment = attachment;
-
+        String signaruteResult = MessageViewInfoExtractor.signaruteResult();
         displayAttachmentInformation();
+
     }
 
     private void displayAttachmentInformation() {
@@ -87,11 +88,13 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
         refreshThumbnail();
 
         //İmzalama icon çağırma
-        String signaruteResult = MessageViewInfoExtractor.signaruteResult();
-        if(signaruteResult.equals("true")){
+
+        signaturuResult = MessageViewInfoExtractor.signaruteResult();
+        Log.e("Getir attachment", signaturuResult);
+        if(signaturuResult.equals("true")){
             MessageHeader.tikYap();
 
-        }else if(signaruteResult.equals("false")){
+        }else if(signaturuResult.equals("false")){
             MessageHeader.carpiYap();
 
         }

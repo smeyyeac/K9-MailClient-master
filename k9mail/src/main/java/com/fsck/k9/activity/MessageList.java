@@ -283,7 +283,7 @@ public class MessageList extends K9Activity implements MessageListFragmentListen
                 R.id.message_list_container);
         mMessageViewFragment = (MessageViewFragment) fragmentManager.findFragmentById(
                 R.id.message_view_container);
-        Log.e("GetirMListFindFragment",  String.valueOf(R.id.message_view_container));
+        //Log.e("GetirMListFindFragment",  String.valueOf(R.id.message_view_container));
     }
 
     /**
