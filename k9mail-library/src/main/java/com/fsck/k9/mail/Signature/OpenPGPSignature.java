@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
 
@@ -168,9 +169,22 @@ public class OpenPGPSignature {
     }
 
     public static String dogrula(String signatureText, String message, String mFrom) {
+        Log.w("getir signatureText",signatureText);
+        Log.w("getir message",message);
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        InputStream mesajj = new ByteArrayInputStream(message.getBytes());
-        InputStream sign = new ByteArrayInputStream(signatureText.getBytes());
+        InputStream mesajj = null;
+
+        try {
+            mesajj = new ByteArrayInputStream(message.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        InputStream sign = null;
+        try {
+            sign = new ByteArrayInputStream(signatureText.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         PGPPublicKey keys = null;
         try {
@@ -181,7 +195,7 @@ public class OpenPGPSignature {
         } catch (PGPException e) {
             e.printStackTrace();
         }
-        Log.e("Getir dogrula", String.valueOf(verify(mesajj, sign, keys)));
+       // Log.e("Getir dogrula", String.valueOf(verify(mesajj, sign, keys)));
         return String.valueOf(verify(mesajj, sign, keys));
     }
 

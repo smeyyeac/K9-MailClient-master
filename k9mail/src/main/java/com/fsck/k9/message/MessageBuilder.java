@@ -169,8 +169,6 @@ public abstract class MessageBuilder {
                 composedMimeMessage.addBodyPart(new MimeBodyPart(new BinaryMemoryBody(MessageCompose.signature.getBytes(), MimeUtil.ENC_7BIT),
                         "application/pgp-signature; name=\"signature.asc\""));
             }
-
-
             if (hasAttachments) {
                 // If we're HTML and have attachments, we have a MimeMultipart container to hold the
                 // whole message (mp here), of which one part is a MimeMultipart container

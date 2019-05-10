@@ -314,60 +314,25 @@ public class MessageViewInfoExtractor {
                 content = HtmlConverter.wrapMessageContent(html);
             }
 
-            if (booleanAttachmentSignature()){
-                if(encryptResult){
-                    dogrulaText = decryptedMessage;
-                    findAttachmentSignature();
-
-                }else{
-                    findAttachmentSignature();
-                }
-
+            if(!MessageExtractor.signatureVar){
+                String sanitizedHtml = htmlSanitizer.sanitize(content);
+                return new ViewableExtractedText(text.toString(), sanitizedHtml);
+            }else{
+                signaturecall();
+                String sanitizedHtml = htmlSanitizer.sanitize(content);
+                return new ViewableExtractedText(text.toString(), sanitizedHtml);
             }
 
-            String sanitizedHtml = htmlSanitizer.sanitize(content);
-            return new ViewableExtractedText(text.toString(), sanitizedHtml);
         } catch (Exception e) {
             throw new MessagingException("Couldn't extract viewable parts", e);
         }
     }
-
-
-    public Boolean booleanAttachmentSignature(){
-        if(attachmentInfosNew.size() != 0) {
-            for (int i = 0; i < attachmentInfosNew.size(); i++) {
-                if (attachmentInfosNew.get(i).displayName.equals("signature.asc")) {
-                    return true;
-                }
-            }
-        }
-        signatureResult = "";
-        return false;
+    public void signaturecall(){
+        String mFrom = dogrulamaFrom();
+        String metin = dogrulamaMetni();
+        signatureResult = OpenPGPSignature.dogrula(MessageExtractor.attachmentSignatureText, metin, mFrom);
     }
 
-    public void findAttachmentSignature(){
-        byte[] decodedBytes = new byte[0];
-        if(attachmentInfosNew.size() != 0) {
-            for (int i = 0; i < attachmentInfosNew.size(); i++) {
-                if (attachmentInfosNew.get(i).displayName.equals("signature.asc")) {
-                    Log.w("Getir Girdimi", "signature");
-                    try {
-                        decodedBytes = Base64.decode(convertStreamToString(attachmentInfosNew.get(i).part.getBody().getInputStream()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (MessagingException e) {
-                        e.printStackTrace();
-                    }
-                    String signatureText = new String(decodedBytes);
-                    String mFrom = dogrulamaFrom();
-                    String metin = dogrulamaMetni();
-                    signatureResult = OpenPGPSignature.dogrula(signatureText, metin, mFrom);
-                    Log.e("Getir signature",OpenPGPSignature.dogrula(signatureText, metin, mFrom));
-                    Log.e("Getir result",signatureResult);
-                }
-            }
-        }
-    }
     public static String signaruteResult() {
         return (signatureResult);
     }

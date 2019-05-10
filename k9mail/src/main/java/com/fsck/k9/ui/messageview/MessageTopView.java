@@ -27,7 +27,9 @@ import com.fsck.k9.R;
 import com.fsck.k9.helper.Contacts;
 import com.fsck.k9.mail.Address;
 import com.fsck.k9.mail.Message;
+import com.fsck.k9.mail.internet.MessageExtractor;
 import com.fsck.k9.mailstore.MessageViewInfo;
+import com.fsck.k9.mailstore.MessageViewInfoExtractor;
 import com.fsck.k9.ui.messageview.MessageContainerView.OnRenderingFinishedListener;
 import com.fsck.k9.view.MessageHeader;
 import com.fsck.k9.view.ThemeUtils;
@@ -117,7 +119,15 @@ public class MessageTopView extends LinearLayout {
         MessageContainerView view = (MessageContainerView) mInflater.inflate(R.layout.message_container,
                 containerView, false);
         containerView.addView(view);
+        if(MessageExtractor.signatureVar) {
+            if (MessageViewInfoExtractor.signaruteResult().equals("true") ) {
+                MessageHeader.tikYap();
+            } else {
+                MessageHeader.carpiYap();
+            }
+            MessageExtractor.signatureVar=false;
 
+        }
 /*      Log.w("GetirMessTopView",getViewHierarcy(containerView));
         if (getViewHierarcy(containerView)==null) {
             Log.w("messagetopview","nullandık");

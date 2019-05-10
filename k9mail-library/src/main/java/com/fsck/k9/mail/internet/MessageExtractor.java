@@ -37,7 +37,8 @@ import static com.fsck.k9.mail.internet.Viewable.Textual;
 
 public class MessageExtractor {
     public static final long NO_TEXT_SIZE_LIMIT = -1L;
-
+    public static String attachmentSignatureText;
+    public static  Boolean signatureVar=false;
 
     private MessageExtractor() {}
 
@@ -57,7 +58,7 @@ public class MessageExtractor {
                 if (mimeType != null && MimeUtility.mimeTypeMatches(mimeType, "text/*") ||
                         part.isMimeType("application/pgp")) {
 
-                    //Log.w("Getir MessageExractor", getTextFromTextPart(part, body, mimeType, textSizeLimit));
+                 //   Log.w("Getir MessageExractor", getTextFromTextPart(part, body, mimeType, textSizeLimit));
 
                     return getTextFromTextPart(part, body, mimeType, textSizeLimit);
                 } else {
@@ -204,6 +205,14 @@ public class MessageExtractor {
                 outputViewableParts.add(html);
             }
         } else if (isSameMimeType(part.getMimeType(), "application/pgp-signature")) {
+
+            final String mimeType = part.getMimeType();
+            try {
+                signatureVar=true;
+                attachmentSignatureText=getTextFromTextPart(part, body, mimeType, 600);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             // ignore this type explicitly
         } else {
             if (skipSavingNonViewableParts) {
