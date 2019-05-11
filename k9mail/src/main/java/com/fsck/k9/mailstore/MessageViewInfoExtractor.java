@@ -306,22 +306,27 @@ public class MessageViewInfoExtractor {
             }
 
             dogrulaText = text.toString();
-            String content = "";
+            String content = HtmlConverter.wrapMessageContent(html);
 
-            if(!decryptedMessage.equals("")){
-                content = HtmlConverter.wrapMessageContent(html.append("Şifreli Mesajınız: " + decryptedMessage));
-            }else {
-                content = HtmlConverter.wrapMessageContent(html);
-            }
 
-            if(!MessageExtractor.signatureVar){
-                String sanitizedHtml = htmlSanitizer.sanitize(content);
-                return new ViewableExtractedText(text.toString(), sanitizedHtml);
-            }else{
+            if(MessageExtractor.signatureVar ){
                 signaturecall();
-                String sanitizedHtml = htmlSanitizer.sanitize(content);
-                return new ViewableExtractedText(text.toString(), sanitizedHtml);
+
+            }else if(MessageExtractor.encryptedVar){
+
+                    String messageTo = MessageViewInfoExtractor.decryptTo();
+                    Log.w("Getir encreeypppp", MessageExtractor.attachmentEncryptedText);
+
+                    String decrypt = decrypt(messageTo, MessageExtractor.attachmentEncryptedText);
+                    Log.w("Getir decrypt", decrypt);
+                    content = HtmlConverter.wrapMessageContent(html.append("Şifreli Mesajınız: " + decrypt));
+                    MessageExtractor.encryptedVar = false;
+
+
             }
+
+            String sanitizedHtml = htmlSanitizer.sanitize(content);
+            return new ViewableExtractedText(text.toString(), sanitizedHtml);
 
         } catch (Exception e) {
             throw new MessagingException("Couldn't extract viewable parts", e);
@@ -651,4 +656,5 @@ public class MessageViewInfoExtractor {
             this.html = html;
         }
     }
+
 }

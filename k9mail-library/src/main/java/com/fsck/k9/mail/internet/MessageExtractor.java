@@ -38,7 +38,9 @@ import static com.fsck.k9.mail.internet.Viewable.Textual;
 public class MessageExtractor {
     public static final long NO_TEXT_SIZE_LIMIT = -1L;
     public static String attachmentSignatureText;
-    public static  Boolean signatureVar=false;
+    public static String attachmentEncryptedText ;
+    public static  Boolean signatureVar = false;
+    public static  Boolean encryptedVar = false;
 
     private MessageExtractor() {}
 
@@ -208,13 +210,24 @@ public class MessageExtractor {
 
             final String mimeType = part.getMimeType();
             try {
-                signatureVar=true;
-                attachmentSignatureText=getTextFromTextPart(part, body, mimeType, 600);
+                signatureVar = true;
+                attachmentSignatureText = getTextFromTextPart(part, body, mimeType, 600);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            // ignore this type explicitly
-        } else {
+
+        } else if ((isSameMimeType(part.getMimeType(), "application/octet-stream"))&&(part.getContentType().indexOf("encrypted.asc")) != -1 ) {
+            Log.e("getirne", String.valueOf((part.getContentType().indexOf("encrypted.asc"))));
+
+            final String mimeTypeEncrypt = part.getMimeType();
+            try {
+                encryptedVar = true;
+                attachmentEncryptedText = getTextFromTextPart(part, body, mimeTypeEncrypt, 8000);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
             if (skipSavingNonViewableParts) {
                 return;
             }
@@ -222,6 +235,7 @@ public class MessageExtractor {
             outputNonViewableParts.add(part);
         }
     }
+
 
     public static Set<Part> getTextParts(Part part) throws MessagingException {
         List<Viewable> viewableParts = new ArrayList<>();

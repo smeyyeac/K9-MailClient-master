@@ -155,32 +155,53 @@ public abstract class MessageBuilder {
 
             // This is the compiled MIME part for an HTML message.
 
+            if (MessageCompose.aktifliksifre){
 
-            MimeMultipart composedMimeMessage = createMimeMultipart();
-            composedMimeMessage.setSubType("alternative");
-            // Let the receiver select either the text or the HTML part.
-            bodyPlain = buildText(isDraft, SimpleMessageFormat.TEXT);
-            composedMimeMessage.addBodyPart(new MimeBodyPart(bodyPlain, "text/plain"));
-//            composedMimeMessage.addBodyPart(new MimeBodyPart(body, "text/html"));
-            MimeMessageHelper.setBody(message, composedMimeMessage);
 
-            if(MessageCompose.aktiflikimza){
-                composedMimeMessage.setSubType("signed; micalg=pgp-sha1; protocol=\"application/pgp-signature\"");
-                composedMimeMessage.addBodyPart(new MimeBodyPart(new BinaryMemoryBody(MessageCompose.signature.getBytes(), MimeUtil.ENC_7BIT),
-                        "application/pgp-signature; name=\"signature.asc\""));
-            }
-            if (hasAttachments) {
-                // If we're HTML and have attachments, we have a MimeMultipart container to hold the
-                // whole message (mp here), of which one part is a MimeMultipart container
-                // (composedMimeMessage) with the user's composed messages, and subsequent parts for
-                // the attachments.
-                //MimeMultipart mp = createMimeMultipart();
-                //mp.addBodyPart(new MimeBodyPart(composedMimeMessage));
-                addAttachmentsToMessage(composedMimeMessage);
+                MimeMultipart multipartEncrypted = createMimeMultipart();
+                multipartEncrypted.setSubType("encrypted; protocol=\"application/pgp-encrypted\"");
+                multipartEncrypted.addBodyPart(new MimeBodyPart(new TextBody("Version: 1"), "application/pgp-encrypted"));
+                MimeBodyPart encryptedPart = new MimeBodyPart(new BinaryMemoryBody(MessageCompose.encryptedMessage.getBytes(), MimeUtil.ENC_7BIT),
+                        "application/octet-stream; name=\"encrypted.asc\"");
+                encryptedPart.addHeader(MimeHeader.HEADER_CONTENT_DISPOSITION, "inline; filename=\"encrypted.asc\"");
+                multipartEncrypted.addBodyPart(encryptedPart);
+                MimeMessageHelper.setBody(message, multipartEncrypted);
+
+                if (hasAttachments) {
+                    addAttachmentsToMessage(multipartEncrypted);
+                    MimeMessageHelper.setBody(message, multipartEncrypted);
+                } else {
+                    MimeMessageHelper.setBody(message, multipartEncrypted);
+                }
+
+
+            }else{
+                MimeMultipart composedMimeMessage = createMimeMultipart();
+                composedMimeMessage.setSubType("alternative");
+                // Let the receiver select either the text or the HTML part.
+                bodyPlain = buildText(isDraft, SimpleMessageFormat.TEXT);
+                composedMimeMessage.addBodyPart(new MimeBodyPart(bodyPlain, "text/plain"));
+                //composedMimeMessage.addBodyPart(new MimeBodyPart(body, "text/html"));
                 MimeMessageHelper.setBody(message, composedMimeMessage);
-            } else {
-                // If no attachments, our multipart/alternative part is the only one we need.
-                MimeMessageHelper.setBody(message, composedMimeMessage);
+
+                if(MessageCompose.aktiflikimza){
+                    composedMimeMessage.setSubType("signed; micalg=pgp-sha1; protocol=\"application/pgp-signature\"");
+                    composedMimeMessage.addBodyPart(new MimeBodyPart(new BinaryMemoryBody(MessageCompose.signature.getBytes(), MimeUtil.ENC_7BIT),
+                               "application/pgp-signature; name=\"signature.asc\""));
+                }
+                if (hasAttachments) {
+                    // If we're HTML and have attachments, we have a MimeMultipart container to hold the
+                    // whole message (mp here), of which one part is a MimeMultipart container
+                    // (composedMimeMessage) with the user's composed messages, and subsequent parts for
+                    // the attachments.
+                    //MimeMultipart mp = createMimeMultipart();
+                    //mp.addBodyPart(new MimeBodyPart(composedMimeMessage));
+                    addAttachmentsToMessage(composedMimeMessage);
+                    MimeMessageHelper.setBody(message, composedMimeMessage);
+                } else {
+                    // If no attachments, our multipart/alternative part is the only one we need.
+                    MimeMessageHelper.setBody(message, composedMimeMessage);
+                }
             }
         } else if (messageFormat == SimpleMessageFormat.TEXT) {
             // Text-only message.

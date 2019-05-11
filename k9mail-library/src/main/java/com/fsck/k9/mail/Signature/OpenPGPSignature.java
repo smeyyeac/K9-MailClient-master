@@ -79,6 +79,7 @@ public class OpenPGPSignature {
                 sig.update(buff, 0, read);
             }
             signedData.close();
+
             return sig.verify();
         } catch (Exception ex) {
             ex.printStackTrace();

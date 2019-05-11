@@ -207,6 +207,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
     private boolean mFinishAfterDraftSaved;
     private boolean alreadyNotifiedUserOfEmptySubject = false;
     public  static  String signature = "";
+    public  static  String encryptedMessage = "";
 
 
     @Override
@@ -1024,7 +1025,7 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             case R.id.send:
                 if(aktiflikimza == true) {
                     signature = OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters(), keyParola);
-                    FileKey.createSignatureFile(signature);
+                    //FileKey.createSignatureFile(signature);
                     Log.e("Getirsifre", keyParola);
                     //addSignatureFile();
                     checkToSendMessage();
@@ -1036,9 +1037,10 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     addresses[0] = recipientPresenter.getToAddresses().get(0);
                     String messageTo =  Address.pack(addresses).toLowerCase();
                     Log.e("MessageTo", messageTo);
-                    FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters()));
-                    addEncryptedFile();
-                    mMessageContentView.setCharacters("Şifreli mesaj gönderilmiştir.");
+                    encryptedMessage = OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters());
+                    //FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters()));
+                    //addEncryptedFile();
+                    mMessageContentView.setCharacters("cis");
                     checkToSendMessage();
                     break;
                 }else if (aktiflikimzasifre == true){

@@ -88,7 +88,7 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
         refreshThumbnail();
 
         //İmzalama icon çağırma
-
+/*
         signaturuResult = MessageViewInfoExtractor.signaruteResult();
         Log.e("Getir attachment", signaturuResult);
         if(signaturuResult.equals("true")){
@@ -97,7 +97,7 @@ public class AttachmentView extends FrameLayout implements OnClickListener, OnLo
         }else if(signaturuResult.equals("false")){
             MessageHeader.carpiYap();
 
-        }
+        }*/
     }
 
     private void setAttachmentSize(long size) {

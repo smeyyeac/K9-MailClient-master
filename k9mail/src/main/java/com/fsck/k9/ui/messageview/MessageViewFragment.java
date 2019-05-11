@@ -55,16 +55,11 @@ import com.fsck.k9.mailstore.AttachmentViewInfo;
 import com.fsck.k9.mailstore.LocalMessage;
 import com.fsck.k9.mailstore.LocalStore;
 import com.fsck.k9.mailstore.MessageViewInfo;
-import com.fsck.k9.mailstore.MessageViewInfoExtractor;
-import com.fsck.k9.message.extractors.AttachmentCounter;
-import com.fsck.k9.ui.message.LocalMessageExtractorLoader;
 import com.fsck.k9.ui.messageview.CryptoInfoDialog.OnClickShowCryptoKeyListener;
 import com.fsck.k9.ui.messageview.MessageCryptoPresenter.MessageCryptoMvpView;
 import com.fsck.k9.view.MessageCryptoDisplayStatus;
 import com.fsck.k9.view.MessageHeader;
 
-import org.assertj.core.internal.cglib.core.Local;
-import org.openintents.openpgp.util.OpenPgpApi;
 
 
 public class MessageViewFragment extends Fragment implements ConfirmationDialogFragmentListener,
@@ -99,7 +94,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
     private Handler handler = new Handler();
     private MessageLoaderHelper messageLoaderHelper;
     private MessageCryptoPresenter messageCryptoPresenter;
-    public String keyPassword = null;
+    public static String keyPassword = null;
 
 
     /**
@@ -301,8 +296,12 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
         mMessageView.setHeaders(message, mAccount);
 
         Log.e("Getir MViewFragment"," displayHeader");
+        Log.e("Getir MVF type", message.getMimeType());
         //Log.e("Getir MViewFragmHas", String.valueOf(message.hasAttachments()));
         //Log.e("Getir MViewFragmCount", String.valueOf(message.getAttachmentCount()));
+        if(message.getMimeType().equals("multipart/encrypted")){
+            showDialog();
+        }
 
         if (mAccount.isOpenPgpProviderConfigured()) {
             mMessageView.getMessageHeaderView().setCryptoStatusLoading();
@@ -529,6 +528,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
             String subject = mMessage.getSubject();
             displayMessageSubject(subject);
             mFragmentListener.updateMenu();
+
             Log.e("Getir MViewFragment","onToggleRead");
 
         }
