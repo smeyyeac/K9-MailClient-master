@@ -145,7 +145,7 @@ public class OpenPGPEncryptDecrypt {
         return null;
     }
 
-    public static String decrypted(String email, String encryptedMessage){
+    public static String decrypted(String email, String password, String encryptedMessage){
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         PGPSecretKey keys = null;
         PGPPrivateKey privateKey = null;
@@ -165,8 +165,8 @@ public class OpenPGPEncryptDecrypt {
         }
 
 
-        String parola = "as";
-        char[] charParola = parola.toCharArray();
+        //String parola = "as";
+        char[] charParola = password.toCharArray();
         try {
             PBESecretKeyDecryptor b = new JcePBESecretKeyDecryptorBuilder(new JcaPGPDigestCalculatorProviderBuilder().setProvider("BC").build()).setProvider("BC").build(charParola);
             privateKey = keys.extractPrivateKey(b);

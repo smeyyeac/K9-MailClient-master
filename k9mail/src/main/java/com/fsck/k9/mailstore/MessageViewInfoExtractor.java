@@ -73,11 +73,8 @@ public class MessageViewInfoExtractor {
     private static String messageTo;
     private static String messageFrom;
     private static String dogrulaText;
-    private static String decryptedMessage = "";
-    private static String encryptedMessage = "";
-    private static List<AttachmentViewInfo> attachmentInfosNew;
     private static String signatureResult = "";
-    private static Boolean encryptResult = false;
+
 
     public static MessageViewInfoExtractor getInstance() {
         Context context = Globals.getContext();
@@ -153,62 +150,8 @@ public class MessageViewInfoExtractor {
 
         attachmentInfos.addAll(attachmentInfoExtractor.extractAttachmentInfoForView(attachments));
 
-
-        attachmentInfosNew = attachmentInfos;
-        decryptedMessage = findAttachmentEncrypt();
-        encryptResult = booleanAttachmentEncrypt();
-
         return extractTextFromViewables(viewableParts);
     }
-    public Boolean booleanAttachmentEncrypt(){
-        if(attachmentInfosNew.size() != 0) {
-            for (int i = 0; i < attachmentInfosNew.size(); i++) {
-                if (attachmentInfosNew.get(i).displayName.equals("encrypted.asc")) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    public String findAttachmentEncrypt(){
-        byte[] decodedBytes = new byte[0];
-        if(attachmentInfosNew.size() != 0){
-            for(int i = 0; i < attachmentInfosNew.size(); i++){
-                if(attachmentInfosNew.get(i).displayName.equals("encrypted.asc")){
-                    Log.w("Getir Girdimi", "encrypt");
-
-                    try {
-                        decodedBytes = Base64.decode(convertStreamToString(attachmentInfosNew.get(i).part.getBody().getInputStream()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (MessagingException e) {
-                        e.printStackTrace();
-                    }
-                    String encryptedMessage = new String(decodedBytes);
-                    String messageTo = MessageViewInfoExtractor.decryptTo();
-                    decryptedMessage = decrypt(messageTo, encryptedMessage);
-                    Log.w("Getir Son", decryptedMessage);
-                    return decryptedMessage;
-                }
-            }
-        }else {
-            Log.w("Getir else","decryp null");
-            decryptedMessage = "";
-        }
-        decryptedMessage = "";
-        return decryptedMessage;
-    }
-    public static String decrypt(String messageTo,String encryptedMessage){
-        String decryptMessage = "";
-        decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, encryptedMessage );
-        Log.e("Getir decrypt", String.valueOf(decryptMessage));
-        while (decryptMessage == null){
-            decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, encryptedMessage );
-            Log.e("Getir decrypt nullmu", String.valueOf(decryptMessage) );
-        }
-        return decryptMessage;
-    }
-
 
     public String convertStreamToString(InputStream is)
             throws IOException {
@@ -313,16 +256,26 @@ public class MessageViewInfoExtractor {
                 signaturecall();
 
             }else if(MessageExtractor.encryptedVar){
+                while(MessageViewFragment.keyPassword == null){
+                    Thread.sleep(5);
+                }
+                if(MessageViewFragment.keyPassword != null){
+                    if(!MessageViewFragment.keyPassword.equals("")){
+                        String password = MessageViewFragment.keyPassword;
+                        String messageTo = MessageViewInfoExtractor.decryptTo();
+                        Log.w("Getir encreeypppp", MessageExtractor.attachmentEncryptedText);
 
-                    String messageTo = MessageViewInfoExtractor.decryptTo();
-                    Log.w("Getir encreeypppp", MessageExtractor.attachmentEncryptedText);
-
-                    String decrypt = decrypt(messageTo, MessageExtractor.attachmentEncryptedText);
-                    Log.w("Getir decrypt", decrypt);
-                    content = HtmlConverter.wrapMessageContent(html.append("Şifreli Mesajınız: " + decrypt));
-                    MessageExtractor.encryptedVar = false;
-
-
+                        String decrypt = decrypt(messageTo, password, MessageExtractor.attachmentEncryptedText);
+                        Log.w("Getir decrypt", decrypt);
+                        content = HtmlConverter.wrapMessageContent(html.append("Şifreli Mesajınız: " + decrypt));
+                        MessageExtractor.encryptedVar = false;
+                        MessageViewFragment.keyPassword = null;
+                    }else{
+                        content = HtmlConverter.wrapMessageContent(html.append("Metin çözülemedi. Parolanızı doğru girerek tekrar deneyin!"));
+                        MessageExtractor.encryptedVar = false;
+                        MessageViewFragment.keyPassword = null;
+                    }
+                }
             }
 
             String sanitizedHtml = htmlSanitizer.sanitize(content);
@@ -338,6 +291,16 @@ public class MessageViewInfoExtractor {
         signatureResult = OpenPGPSignature.dogrula(MessageExtractor.attachmentSignatureText, metin, mFrom);
     }
 
+    public static String decrypt(String messageTo, String password, String encryptedMessage){
+        String decryptMessage = "";
+        decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, password, encryptedMessage );
+        Log.e("Getir decrypt", String.valueOf(decryptMessage));
+        while (decryptMessage == null){
+            decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, password, encryptedMessage );
+            Log.e("Getir decrypt nullmu", String.valueOf(decryptMessage) );
+        }
+        return decryptMessage;
+    }
     public static String signaruteResult() {
         return (signatureResult);
     }

@@ -4,6 +4,7 @@ package com.fsck.k9.ui.messageview;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -16,6 +17,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.IntentSender.SendIntentException;
 import android.content.Loader;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -220,6 +223,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
         mAccount = Preferences.getPreferences(getApplicationContext()).getAccount(mMessageReference.getAccountUuid());
         messageLoaderHelper.asyncStartOrResumeLoadingMessage(messageReference, null);
 
+        Log.e("GETIRMESSAGE","DISPLAY");
         mFragmentListener.updateMenu();
     }
 
@@ -297,9 +301,8 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
 
         Log.e("Getir MViewFragment"," displayHeader");
         Log.e("Getir MVF type", message.getMimeType());
-        //Log.e("Getir MViewFragmHas", String.valueOf(message.hasAttachments()));
-        //Log.e("Getir MViewFragmCount", String.valueOf(message.getAttachmentCount()));
-        if(message.getMimeType().equals("multipart/encrypted")){
+
+        if(mMessage.getMimeType().equals("multipart/encrypted")){
             showDialog();
         }
 
@@ -308,6 +311,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
         }
         displayMessageSubject(getSubjectForMessage(message));
         mFragmentListener.updateMenu();
+
     }
 
     /**
@@ -889,6 +893,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.parola_customdialog);
 
+        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         Button btnKaydet = (Button) dialog.findViewById(R.id.save);
         final TextView[] parola = {(TextView) dialog.findViewById(R.id.parola)};
@@ -898,7 +903,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
             @Override
             public void onClick(View v) {
                 if(parolagir.equals("")){
-                    Toast.makeText(context[0],  "Lütfen anahtarınız için sifrenizi giriniz.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context[0],  "Mesaj şifrelidir.Lütfen anahtarınız için parolanızı girin.", Toast.LENGTH_LONG).show();
                 }else {
                     keyPassword = parolagir.getText().toString();
                     Log.w("Getir parola fonk", keyPassword);
