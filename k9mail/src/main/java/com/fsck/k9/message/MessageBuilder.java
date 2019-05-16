@@ -173,7 +173,7 @@ public abstract class MessageBuilder {
                 } else {
                     MimeMessageHelper.setBody(message, multipartEncrypted);
                 }
-
+                MessageCompose.aktifliksifre = false;
 
             }else{
                 MimeMultipart composedMimeMessage = createMimeMultipart();
@@ -188,6 +188,7 @@ public abstract class MessageBuilder {
                     composedMimeMessage.setSubType("signed; micalg=pgp-sha1; protocol=\"application/pgp-signature\"");
                     composedMimeMessage.addBodyPart(new MimeBodyPart(new BinaryMemoryBody(MessageCompose.signature.getBytes(), MimeUtil.ENC_7BIT),
                                "application/pgp-signature; name=\"signature.asc\""));
+                    MessageCompose.aktiflikimza = false;
                 }
                 if (hasAttachments) {
                     // If we're HTML and have attachments, we have a MimeMultipart container to hold the

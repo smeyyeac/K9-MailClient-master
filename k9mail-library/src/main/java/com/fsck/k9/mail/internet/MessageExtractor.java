@@ -216,7 +216,11 @@ public class MessageExtractor {
                 e.printStackTrace();
             }
 
-        } else if ((isSameMimeType(part.getMimeType(), "application/octet-stream"))&&(part.getContentType().indexOf("encrypted.asc")) != -1 ) {
+        } else if ((isSameMimeType(part.getMimeType(), "application/octet-stream"))&&(((part.getContentType().indexOf("encrypted.asc")) != -1) || ((part.getDisposition().indexOf("msg.asc"))!= -1))) {
+
+            //Log.e("Getir ", String.valueOf(part.getDisposition().indexOf("msg.asc"))!= -1  );
+
+
             Log.e("getirne", String.valueOf((part.getContentType().indexOf("encrypted.asc"))));
 
             final String mimeTypeEncrypt = part.getMimeType();

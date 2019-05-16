@@ -196,7 +196,7 @@ public class OpenPGPSignature {
         } catch (PGPException e) {
             e.printStackTrace();
         }
-       // Log.e("Getir dogrula", String.valueOf(verify(mesajj, sign, keys)));
+        // Log.e("Getir dogrula", String.valueOf(verify(mesajj, sign, keys)));
         return String.valueOf(verify(mesajj, sign, keys));
     }
 

@@ -172,7 +172,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         Context context = new ContextThemeWrapper(inflater.getContext(),
                 K9.getK9ThemeResourceId(K9.getK9MessageViewTheme()));
         LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -257,33 +257,30 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
             }
         }
     }
-/*    private void showMessage(MessageViewInfo messageViewInfo) {
-        hideKeyboard();
-
-        boolean handledByCryptoPresenter = messageCryptoPresenter.maybeHandleShowMessage(mMessageView, mAccount, messageViewInfo);
-
-         if (!handledByCryptoPresenter) {
-            if(findEncyptedPassword(messageViewInfo)){
-                showDialog();
-                Log.w("GetirMViewFragment", "showMessage");
-                mMessageView.showMessage(mAccount, messageViewInfo);
-                if (mAccount.isOpenPgpProviderConfigured()) {
-                    mMessageView.getMessageHeaderView().setCryptoStatusDisabled();
-                } else {
-                    mMessageView.getMessageHeaderView().hideCryptoStatus();
-                }
-            }else{
-                Log.w("GetirMViewFragment", "showMessage");
-                mMessageView.showMessage(mAccount, messageViewInfo);
-                if (mAccount.isOpenPgpProviderConfigured()) {
-                    mMessageView.getMessageHeaderView().setCryptoStatusDisabled();
-                } else {
-                    mMessageView.getMessageHeaderView().hideCryptoStatus();
+    /*    private void showMessage(MessageViewInfo messageViewInfo) {
+            hideKeyboard();
+            boolean handledByCryptoPresenter = messageCryptoPresenter.maybeHandleShowMessage(mMessageView, mAccount, messageViewInfo);
+             if (!handledByCryptoPresenter) {
+                if(findEncyptedPassword(messageViewInfo)){
+                    showDialog();
+                    Log.w("GetirMViewFragment", "showMessage");
+                    mMessageView.showMessage(mAccount, messageViewInfo);
+                    if (mAccount.isOpenPgpProviderConfigured()) {
+                        mMessageView.getMessageHeaderView().setCryptoStatusDisabled();
+                    } else {
+                        mMessageView.getMessageHeaderView().hideCryptoStatus();
+                    }
+                }else{
+                    Log.w("GetirMViewFragment", "showMessage");
+                    mMessageView.showMessage(mAccount, messageViewInfo);
+                    if (mAccount.isOpenPgpProviderConfigured()) {
+                        mMessageView.getMessageHeaderView().setCryptoStatusDisabled();
+                    } else {
+                        mMessageView.getMessageHeaderView().hideCryptoStatus();
+                    }
                 }
             }
-
-        }
-    }*/
+        }*/
     public Boolean findEncyptedPassword(MessageViewInfo messageViewInfo) {
         if (messageViewInfo.attachments.size() != 0) {
             for (int i = 0; i < messageViewInfo.attachments.size(); i++) {
@@ -734,7 +731,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
 
         @Override
         public void startPendingIntentForCryptoPresenter(IntentSender si, Integer requestCode, Intent fillIntent,
-                int flagsMask, int flagValues, int extraFlags) throws SendIntentException {
+                                                         int flagsMask, int flagValues, int extraFlags) throws SendIntentException {
             if (requestCode == null) {
                 getActivity().startIntentSender(si, fillIntent, flagsMask, flagValues, extraFlags);
                 return;
@@ -837,7 +834,7 @@ public class MessageViewFragment extends Fragment implements ConfirmationDialogF
 
         @Override
         public void startIntentSenderForMessageLoaderHelper(IntentSender si, int requestCode, Intent fillIntent,
-                int flagsMask, int flagValues, int extraFlags) {
+                                                            int flagsMask, int flagValues, int extraFlags) {
             try {
                 requestCode |= REQUEST_MASK_LOADER_HELPER;
                 getActivity().startIntentSenderForResult(
