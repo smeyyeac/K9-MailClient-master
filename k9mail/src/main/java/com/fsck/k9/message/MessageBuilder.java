@@ -152,11 +152,9 @@ public abstract class MessageBuilder {
 
         if (messageFormat == SimpleMessageFormat.HTML) {
             // HTML message (with alternative text part)
-
             // This is the compiled MIME part for an HTML message.
 
             if (MessageCompose.aktifliksifre){
-
 
                 MimeMultipart multipartEncrypted = createMimeMultipart();
                 multipartEncrypted.setSubType("encrypted; protocol=\"application/pgp-encrypted\"");

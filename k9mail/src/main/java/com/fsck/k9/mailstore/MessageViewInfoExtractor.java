@@ -288,6 +288,7 @@ public class MessageViewInfoExtractor {
     public void signaturecall(){
         String mFrom = dogrulamaFrom();
         String metin = dogrulamaMetni();
+
         signatureResult = OpenPGPSignature.dogrula(MessageExtractor.attachmentSignatureText, metin, mFrom);
     }
 

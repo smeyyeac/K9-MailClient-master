@@ -1040,9 +1040,8 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     encryptedMessage = OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters());
                     //FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters()));
                     //addEncryptedFile();
-                    mMessageContentView.setCharacters("cis");
+                    //mMessageContentView.setCharacters("");
                     checkToSendMessage();
-
                     break;
                 }else if (aktiflikimzasifre == true){
                     FileKey.createSignatureFile(OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters(), keyParola));

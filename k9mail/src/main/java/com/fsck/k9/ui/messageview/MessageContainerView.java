@@ -382,7 +382,6 @@ public class MessageContainerView extends LinearLayout implements OnLayoutChange
         this.attachmentCallback = attachmentCallback;
 
         resetView();
-
         renderAttachments(messageViewInfo); //Mesaja eki buradan ekliyor
 
         if (mSavedState != null) {
