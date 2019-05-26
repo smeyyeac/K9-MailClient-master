@@ -3779,7 +3779,7 @@ public class MessagingController {
         if (part != null) {
 
             quotedText = MessageExtractor.getTextFromPart(part);
-            Log.w("Getir MessageConroller send", quotedText);
+            //Log.w("Getir MessageConroller send", quotedText);
         }
         if (quotedText != null) {
             msg.putExtra(Intent.EXTRA_TEXT, quotedText);

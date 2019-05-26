@@ -1037,22 +1037,28 @@ public class MessageCompose extends K9Activity implements OnClickListener,
                     addresses[0] = recipientPresenter.getToAddresses().get(0);
                     String messageTo =  Address.pack(addresses).toLowerCase();
                     Log.e("MessageTo", messageTo);
-                    encryptedMessage = OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters());
+                    encryptedMessage = OpenPGPEncryptDecrypt.encrypted(messageTo,  mMessageContentView.getCharacters());
                     //FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters()));
                     //addEncryptedFile();
                     //mMessageContentView.setCharacters("");
                     checkToSendMessage();
                     break;
                 }else if (aktiflikimzasifre == true){
-                    FileKey.createSignatureFile(OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters(), keyParola));
                     Address[] addresses = new Address[1];
                     addresses[0] = recipientPresenter.getToAddresses().get(0);
                     String messageTo =  Address.pack(addresses).toLowerCase();
                     Log.e("MessageTo", messageTo);
+
+                    encryptedMessage = OpenPGPEncryptDecrypt.signAndEncrypted(mMessageContentView.getCharacters(), mAccount.getEmail().toLowerCase(), keyParola, messageTo);
+
+                    /*FileKey.createSignatureFile(OpenPGPSignature.imzalama(mAccount.getEmail().toLowerCase(), mMessageContentView.getCharacters(), keyParola));
                     FileKey.createEncryptedFile(OpenPGPEncryptDecrypt.encrypted(messageTo, mMessageContentView.getCharacters()));
                     addEncryptedFile();
                     mMessageContentView.setCharacters("Şifreli mesaj gönderilmiştir.");
-                    addSignatureFile();
+                    addSignatureFile();*/
+
+                    checkToSendMessage();
+                    break;
                 }
                 else{
                     checkToSendMessage();

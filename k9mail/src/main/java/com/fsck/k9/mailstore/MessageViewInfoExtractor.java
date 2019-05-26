@@ -74,6 +74,7 @@ public class MessageViewInfoExtractor {
     private static String messageFrom;
     private static String dogrulaText;
     private static String signatureResult = "";
+    private static String signAndEncrypt = "";
 
 
     public static MessageViewInfoExtractor getInstance() {
@@ -164,8 +165,7 @@ public class MessageViewInfoExtractor {
                 while ((n = reader.read(buffer)) != -1) {
                     writer.write(buffer, 0, n);
                 }
-            }
-            finally {
+            } finally {
                 is.close();
             }
             return writer.toString();
@@ -173,14 +173,13 @@ public class MessageViewInfoExtractor {
             return "";
         }
     }
+
     /**
      * Extract the viewable textual parts of a message and return the rest as attachments.
      *
      * @return A {@link ViewableExtractedText} instance containing the textual parts of the message as
-     *         plain text and HTML, and a list of message parts considered attachments.
-     *
-     * @throws com.fsck.k9.mail.MessagingException
-     *          In case of an error.
+     * plain text and HTML, and a list of message parts considered attachments.
+     * @throws com.fsck.k9.mail.MessagingException In case of an error.
      */
     @VisibleForTesting
     ViewableExtractedText extractTextFromViewables(List<Viewable> viewables)
@@ -208,7 +207,7 @@ public class MessageViewInfoExtractor {
                 } else if (viewable instanceof MessageHeader) {
                     MessageHeader header = (MessageHeader) viewable;
                     Part containerPart = header.getContainerPart();
-                    Message innerMessage =  header.getMessage();
+                    Message innerMessage = header.getMessage();
 
                     addTextDivider(text, containerPart, !hideDivider);
                     addMessageHeaderText(text, innerMessage);
@@ -252,27 +251,30 @@ public class MessageViewInfoExtractor {
             String content = HtmlConverter.wrapMessageContent(html);
 
 
-            if(MessageExtractor.signatureVar ){
+            if (MessageExtractor.signatureVar) {
                 signaturecall();
 
-            }else if(MessageExtractor.encryptedVar){
-                while(MessageViewFragment.keyPassword == null){
+            } else if (MessageExtractor.encryptedVar) {
+                while (MessageViewFragment.keyPassword == null) {
                     Thread.sleep(5);
                 }
-                if(MessageViewFragment.keyPassword != null){
-                    if(!MessageViewFragment.keyPassword.equals("")){
+                if (MessageViewFragment.keyPassword != null) {
+                    if (!MessageViewFragment.keyPassword.equals("")) {
                         String password = MessageViewFragment.keyPassword;
                         String messageTo = MessageViewInfoExtractor.decryptTo();
+                        String messageFr = MessageViewInfoExtractor.dogrulamaFrom();
                         Log.w("Getir encreeypppp", MessageExtractor.attachmentEncryptedText);
 
-                        String decrypt = decrypt(messageTo, password, MessageExtractor.attachmentEncryptedText);
-                        Log.w("Getir decrypt", decrypt);
+                        String decrypt = decrypt(messageTo, messageFr, password, MessageExtractor.attachmentEncryptedText);
+                        signAndEncrypt = OpenPGPEncryptDecrypt.signAndEncrypt;
+                        Log.e("GETİRRRSONUCC  222 ", signAndEncrypt);
+                        Log.w("GetirDecrypt", decrypt);
                         content = HtmlConverter.wrapMessageContent(html.append("Şifreli Mesajınız: " + decrypt));
-                        MessageExtractor.encryptedVar = false;
+                        //MessageExtractor.encryptedVar = false;
                         MessageViewFragment.keyPassword = null;
-                    }else{
+                    } else {
                         content = HtmlConverter.wrapMessageContent(html.append("Metin çözülemedi. Parolanızı doğru girerek tekrar deneyin!"));
-                        MessageExtractor.encryptedVar = false;
+                        //MessageExtractor.encryptedVar = false;
                         MessageViewFragment.keyPassword = null;
                     }
                 }
@@ -285,23 +287,26 @@ public class MessageViewInfoExtractor {
             throw new MessagingException("Couldn't extract viewable parts", e);
         }
     }
-    public void signaturecall(){
+
+    public void signaturecall() {
         String mFrom = dogrulamaFrom();
         String metin = dogrulamaMetni();
 
         signatureResult = OpenPGPSignature.dogrula(MessageExtractor.attachmentSignatureText, metin, mFrom);
     }
 
-    public static String decrypt(String messageTo, String password, String encryptedMessage){
-        String decryptMessage = "";
-        decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, password, encryptedMessage );
+    public static String decrypt(String messageTo, String messageFr, String password, String encryptedMessage) {
+
+        Log.e("GETIRMFORMMM", messageFr);
+        String decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo,messageFr, password, encryptedMessage);
         Log.e("Getir decrypt", String.valueOf(decryptMessage));
-        while (decryptMessage == null){
-            decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo, password, encryptedMessage );
-            Log.e("Getir decrypt nullmu", String.valueOf(decryptMessage) );
+        while (decryptMessage == null) {
+            decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo,messageFr, password, encryptedMessage);
+            Log.e("Getir decrypt nullmu", String.valueOf(decryptMessage));
         }
         return decryptMessage;
     }
+
     public static String signaruteResult() {
         return (signatureResult);
     }
@@ -323,9 +328,10 @@ public class MessageViewInfoExtractor {
         String endOfBlock = ";";
         int startIndex = search.indexOf(startOfBlock) + startOfBlock.length();
         int endIndex = search.indexOf(endOfBlock);
-        String result = search.substring(startIndex,endIndex);
+        String result = search.substring(startIndex, endIndex);
         return result;
     }
+
     /**
      * Use the contents of a {@link com.fsck.k9.mail.internet.Viewable} to create the HTML to be displayed.
      *
@@ -334,18 +340,15 @@ public class MessageViewInfoExtractor {
      * to HTML if necessary.
      * </p>
      *
-     * @param viewable
-     *         The viewable part to build the HTML from.
-     * @param prependDivider
-     *         {@code true}, if the HTML divider should be inserted as first element.
-     *         {@code false}, otherwise.
-     *
+     * @param viewable       The viewable part to build the HTML from.
+     * @param prependDivider {@code true}, if the HTML divider should be inserted as first element.
+     *                       {@code false}, otherwise.
      * @return The contents of the supplied viewable instance as HTML.
      */
     private StringBuilder buildHtml(Viewable viewable, boolean prependDivider) {
         StringBuilder html = new StringBuilder();
         if (viewable instanceof Textual) {
-            Part part = ((Textual)viewable).getPart();
+            Part part = ((Textual) viewable).getPart();
             addHtmlDivider(html, part, prependDivider);
 
             String t = MessageExtractor.getTextFromPart(part);
@@ -376,7 +379,7 @@ public class MessageViewInfoExtractor {
     private StringBuilder buildText(Viewable viewable, boolean prependDivider) {
         StringBuilder text = new StringBuilder();
         if (viewable instanceof Textual) {
-            Part part = ((Textual)viewable).getPart();
+            Part part = ((Textual) viewable).getPart();
             addTextDivider(text, part, prependDivider);
 
             String t = MessageExtractor.getTextFromPart(part);
@@ -407,13 +410,10 @@ public class MessageViewInfoExtractor {
     /**
      * Add an HTML divider between two HTML message parts.
      *
-     * @param html
-     *         The {@link StringBuilder} to append the divider to.
-     * @param part
-     *         The message part that will follow after the divider. This is used to extract the
-     *         part's name.
-     * @param prependDivider
-     *         {@code true}, if the divider should be appended. {@code false}, otherwise.
+     * @param html           The {@link StringBuilder} to append the divider to.
+     * @param part           The message part that will follow after the divider. This is used to extract the
+     *                       part's name.
+     * @param prependDivider {@code true}, if the divider should be appended. {@code false}, otherwise.
      */
     private void addHtmlDivider(StringBuilder html, Part part, boolean prependDivider) {
         if (prependDivider) {
@@ -428,9 +428,7 @@ public class MessageViewInfoExtractor {
     /**
      * Get the name of the message part.
      *
-     * @param part
-     *         The part to get the name for.
-     *
+     * @param part The part to get the name for.
      * @return The (file)name of the part if available. An empty string, otherwise.
      */
     private static String getPartName(Part part) {
@@ -447,13 +445,10 @@ public class MessageViewInfoExtractor {
     /**
      * Add a plain text divider between two plain text message parts.
      *
-     * @param text
-     *         The {@link StringBuilder} to append the divider to.
-     * @param part
-     *         The message part that will follow after the divider. This is used to extract the
-     *         part's name.
-     * @param prependDivider
-     *         {@code true}, if the divider should be appended. {@code false}, otherwise.
+     * @param text           The {@link StringBuilder} to append the divider to.
+     * @param part           The message part that will follow after the divider. This is used to extract the
+     *                       part's name.
+     * @param prependDivider {@code true}, if the divider should be appended. {@code false}, otherwise.
      */
     private void addTextDivider(StringBuilder text, Part part, boolean prependDivider) {
         if (prependDivider) {
@@ -481,13 +476,9 @@ public class MessageViewInfoExtractor {
     /**
      * Extract important header values from a message to display inline (plain text version).
      *
-     * @param text
-     *         The {@link StringBuilder} that will receive the (plain text) output.
-     * @param message
-     *         The message to extract the header values from.
-     *
-     * @throws com.fsck.k9.mail.MessagingException
-     *          In case of an error.
+     * @param text    The {@link StringBuilder} that will receive the (plain text) output.
+     * @param message The message to extract the header values from.
+     * @throws com.fsck.k9.mail.MessagingException In case of an error.
      */
     private void addMessageHeaderText(StringBuilder text, Message message)
             throws MessagingException {
@@ -542,13 +533,9 @@ public class MessageViewInfoExtractor {
     /**
      * Extract important header values from a message to display inline (HTML version).
      *
-     * @param html
-     *         The {@link StringBuilder} that will receive the (HTML) output.
-     * @param message
-     *         The message to extract the header values from.
-     *
-     * @throws com.fsck.k9.mail.MessagingException
-     *          In case of an error.
+     * @param html    The {@link StringBuilder} that will receive the (HTML) output.
+     * @param message The message to extract the header values from.
+     * @throws com.fsck.k9.mail.MessagingException In case of an error.
      */
     private void addMessageHeaderHtml(StringBuilder html, Message message)
             throws MessagingException {
@@ -594,12 +581,9 @@ public class MessageViewInfoExtractor {
     /**
      * Output an HTML table two column row with some hardcoded style.
      *
-     * @param html
-     *         The {@link StringBuilder} that will receive the output.
-     * @param header
-     *         The string to be put in the {@code TH} element.
-     * @param value
-     *         The string to be put in the {@code TD} element.
+     * @param html   The {@link StringBuilder} that will receive the output.
+     * @param header The string to be put in the {@code TH} element.
+     * @param value  The string to be put in the {@code TD} element.
      */
     private static void addTableRow(StringBuilder html, String header, String value) {
         html.append("<tr><th style=\"text-align: left; vertical-align: top;\">");
@@ -620,5 +604,4 @@ public class MessageViewInfoExtractor {
             this.html = html;
         }
     }
-
 }

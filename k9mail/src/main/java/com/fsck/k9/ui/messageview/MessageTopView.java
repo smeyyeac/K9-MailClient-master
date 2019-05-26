@@ -27,6 +27,7 @@ import com.fsck.k9.R;
 import com.fsck.k9.helper.Contacts;
 import com.fsck.k9.mail.Address;
 import com.fsck.k9.mail.Message;
+import com.fsck.k9.mail.OpenPGP.OpenPGPEncryptDecrypt;
 import com.fsck.k9.mail.internet.MessageExtractor;
 import com.fsck.k9.mailstore.MessageViewInfo;
 import com.fsck.k9.mailstore.MessageViewInfoExtractor;
@@ -122,17 +123,23 @@ public class MessageTopView extends LinearLayout {
         if(MessageExtractor.signatureVar) {
             if (MessageViewInfoExtractor.signaruteResult().equals("true") ) {
                 MessageHeader.tikYap();
-            } else {
+            }
+            if(MessageViewInfoExtractor.signaruteResult().equals("false")){
                 MessageHeader.carpiYap();
             }
             MessageExtractor.signatureVar=false;
+        }
+        if(MessageExtractor.encryptedVar) {
+            if (OpenPGPEncryptDecrypt.signAndEncrypt.equals("true") ) {
+                MessageHeader.tikYap();
+            }
+            if (OpenPGPEncryptDecrypt.signAndEncrypt.equals("false")){
+                MessageHeader.carpiYap();
+            }
+            OpenPGPEncryptDecrypt.signAndEncrypt = "";
+            MessageExtractor.encryptedVar=false;
+        }
 
-        }
-/*      Log.w("GetirMessTopView",getViewHierarcy(containerView));
-        if (getViewHierarcy(containerView)==null) {
-            Log.w("messagetopview","nullandık");
-        }
-*/
         boolean hideUnsignedTextDivider = !account.getCryptoSupportSignOnly();
         view.displayMessageViewContainer(messageViewInfo, new OnRenderingFinishedListener() {
             @Override
@@ -143,7 +150,6 @@ public class MessageTopView extends LinearLayout {
         if (view.hasHiddenExternalImages()) {
             showShowPicturesButton();
         }
-        //Log.e("salakkkkk", String.valueOf(containerView.getChildAt(0).getContext()));
     }
 
     public void showMessageCryptoWarning(final MessageViewInfo messageViewInfo, Drawable providerIcon,

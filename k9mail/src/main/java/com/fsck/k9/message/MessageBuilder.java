@@ -1,6 +1,9 @@
 package com.fsck.k9.message;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +28,7 @@ import com.fsck.k9.mail.BoundaryGenerator;
 import com.fsck.k9.mail.Flag;
 import com.fsck.k9.mail.Message.RecipientType;
 import com.fsck.k9.mail.MessagingException;
+import com.fsck.k9.mail.OpenPGP.OpenPGPEncryptDecrypt;
 import com.fsck.k9.mail.internet.MessageIdGenerator;
 import com.fsck.k9.mail.internet.MimeBodyPart;
 import com.fsck.k9.mail.internet.MimeHeader;
@@ -154,16 +158,43 @@ public abstract class MessageBuilder {
             // HTML message (with alternative text part)
             // This is the compiled MIME part for an HTML message.
 
-            if (MessageCompose.aktifliksifre){
+            if (MessageCompose.aktifliksifre || MessageCompose.aktiflikimzasifre){
 
                 MimeMultipart multipartEncrypted = createMimeMultipart();
                 multipartEncrypted.setSubType("encrypted; protocol=\"application/pgp-encrypted\"");
                 multipartEncrypted.addBodyPart(new MimeBodyPart(new TextBody("Version: 1"), "application/pgp-encrypted"));
-                MimeBodyPart encryptedPart = new MimeBodyPart(new BinaryMemoryBody(MessageCompose.encryptedMessage.getBytes(), MimeUtil.ENC_7BIT),
-                        "application/octet-stream; name=\"encrypted.asc\"");
+
+                //bodyPlain = buildText(isDraft, SimpleMessageFormat.TEXT);
+                //String encryptedMessage =  OpenPGPEncryptDecrypt.encrypted("saruhanur@gmail.com",  String.valueOf(message));
+/*                InputStream in = MimeUtility.decodeBody(body);
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                String neBu = null;
+                try {
+                    int ch;
+                    while ((ch = in.read()) >= 0) {
+                        out.write(ch);
+                    }
+                    byte[] returnBytes = out.toByteArray();
+                    out.close();
+                    neBu = new String(returnBytes);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Log.e("GETIRR", neBu);
+                */
+                
+                MimeBodyPart encryptedPart = new MimeBodyPart(new BinaryMemoryBody(MessageCompose.encryptedMessage.getBytes(), MimeUtil.ENC_7BIT), "application/octet-stream; name=\"encrypted.asc\"");
                 encryptedPart.addHeader(MimeHeader.HEADER_CONTENT_DISPOSITION, "inline; filename=\"encrypted.asc\"");
                 multipartEncrypted.addBodyPart(encryptedPart);
+
                 MimeMessageHelper.setBody(message, multipartEncrypted);
+               /* String contentType = String.format(
+                        "multipart/encrypted; boundary=\"%s\";\r\n  protocol=\"application/pgp-encrypted\"",
+                        multipartEncrypted.getBoundary());
+                message.setBody(MimeHeader.HEADER_CONTENT_TYPE, contentType);*/
+
 
                 if (hasAttachments) {
                     addAttachmentsToMessage(multipartEncrypted);
@@ -172,6 +203,7 @@ public abstract class MessageBuilder {
                     MimeMessageHelper.setBody(message, multipartEncrypted);
                 }
                 MessageCompose.aktifliksifre = false;
+                MessageCompose.aktiflikimzasifre = false;
 
             }else{
                 MimeMultipart composedMimeMessage = createMimeMultipart();
@@ -187,6 +219,7 @@ public abstract class MessageBuilder {
                     composedMimeMessage.addBodyPart(new MimeBodyPart(new BinaryMemoryBody(MessageCompose.signature.getBytes(), MimeUtil.ENC_7BIT),
                                "application/pgp-signature; name=\"signature.asc\""));
                     MessageCompose.aktiflikimza = false;
+
                 }
                 if (hasAttachments) {
                     // If we're HTML and have attachments, we have a MimeMultipart container to hold the
