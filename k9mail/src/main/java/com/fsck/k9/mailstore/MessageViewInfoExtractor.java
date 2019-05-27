@@ -75,7 +75,7 @@ public class MessageViewInfoExtractor {
     private static String dogrulaText;
     private static String signatureResult = "";
     private static String signAndEncrypt = "";
-
+    public static boolean encryptedresult=false;
 
     public static MessageViewInfoExtractor getInstance() {
         Context context = Globals.getContext();
@@ -152,26 +152,6 @@ public class MessageViewInfoExtractor {
         attachmentInfos.addAll(attachmentInfoExtractor.extractAttachmentInfoForView(attachments));
 
         return extractTextFromViewables(viewableParts);
-    }
-
-    public String convertStreamToString(InputStream is)
-            throws IOException {
-        if (is != null) {
-            Writer writer = new StringWriter();
-            char[] buffer = new char[1024];
-            try {
-                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                int n;
-                while ((n = reader.read(buffer)) != -1) {
-                    writer.write(buffer, 0, n);
-                }
-            } finally {
-                is.close();
-            }
-            return writer.toString();
-        } else {
-            return "";
-        }
     }
 
     /**
@@ -258,23 +238,25 @@ public class MessageViewInfoExtractor {
                 while (MessageViewFragment.keyPassword == null) {
                     Thread.sleep(5);
                 }
+
                 if (MessageViewFragment.keyPassword != null) {
                     if (!MessageViewFragment.keyPassword.equals("")) {
                         String password = MessageViewFragment.keyPassword;
                         String messageTo = MessageViewInfoExtractor.decryptTo();
                         String messageFr = MessageViewInfoExtractor.dogrulamaFrom();
-                        Log.w("Getir encreeypppp", MessageExtractor.attachmentEncryptedText);
-
+                        //Log.w("Getir encreeypppp", MessageExtractor.attachmentEncryptedText);
                         String decrypt = decrypt(messageTo, messageFr, password, MessageExtractor.attachmentEncryptedText);
                         signAndEncrypt = OpenPGPEncryptDecrypt.signAndEncrypt;
                         Log.e("GETİRRRSONUCC  222 ", signAndEncrypt);
                         Log.w("GetirDecrypt", decrypt);
                         content = HtmlConverter.wrapMessageContent(html.append("Şifreli Mesajınız: " + decrypt));
                         //MessageExtractor.encryptedVar = false;
+                        encryptedresult=true;
                         MessageViewFragment.keyPassword = null;
                     } else {
                         content = HtmlConverter.wrapMessageContent(html.append("Metin çözülemedi. Parolanızı doğru girerek tekrar deneyin!"));
                         //MessageExtractor.encryptedVar = false;
+                        encryptedresult=false;
                         MessageViewFragment.keyPassword = null;
                     }
                 }

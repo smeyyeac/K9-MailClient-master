@@ -57,6 +57,7 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
     private TextView mSubjectView;
     private MessageCryptoStatusView mCryptoStatusIcon;
     private static Button mSignatureResult;
+    private static Button mencryptedreasult;
 
     private View mChip;
     private CheckBox mFlagged;
@@ -117,6 +118,7 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
         mDateView = (TextView) findViewById(R.id.date);
         mFlagged = (CheckBox) findViewById(R.id.flagged);
         mSignatureResult=(Button) findViewById(R.id.signature_result);
+        mencryptedreasult=(Button) findViewById(R.id.encrypted_result);
 
         defaultSubjectColor = mSubjectView.getCurrentTextColor();
         mFontSizes.setViewTextSize(mSubjectView, mFontSizes.getMessageViewSubject());
@@ -530,4 +532,8 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
     public static void carpiYap(){
         mSignatureResult.setBackgroundResource(R.drawable.kirmizicarpi);
     }
+    public static void openlock(){
+mencryptedreasult.setBackgroundResource(R.drawable.openlock);
+    }
+    public static void closelock(){mencryptedreasult.setBackgroundResource(R.drawable.closelock);}
 }

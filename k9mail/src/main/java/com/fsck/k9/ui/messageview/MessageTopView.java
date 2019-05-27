@@ -138,7 +138,14 @@ public class MessageTopView extends LinearLayout {
             }
             OpenPGPEncryptDecrypt.signAndEncrypt = "";
             MessageExtractor.encryptedVar=false;
+            if(MessageViewInfoExtractor.encryptedresult){
+                MessageHeader.openlock();
+            }else{
+                MessageHeader.closelock();
+            }
+            MessageViewInfoExtractor.encryptedresult=false;
         }
+
 
         boolean hideUnsignedTextDivider = !account.getCryptoSupportSignOnly();
         view.displayMessageViewContainer(messageViewInfo, new OnRenderingFinishedListener() {
