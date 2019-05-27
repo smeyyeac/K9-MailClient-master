@@ -250,12 +250,10 @@ public class MessageViewInfoExtractor {
                         Log.e("GETİRRRSONUCC  222 ", signAndEncrypt);
                         Log.w("GetirDecrypt", decrypt);
                         content = HtmlConverter.wrapMessageContent(html.append("Şifreli Mesajınız: " + decrypt));
-                        //MessageExtractor.encryptedVar = false;
                         encryptedresult=true;
                         MessageViewFragment.keyPassword = null;
                     } else {
                         content = HtmlConverter.wrapMessageContent(html.append("Metin çözülemedi. Parolanızı doğru girerek tekrar deneyin!"));
-                        //MessageExtractor.encryptedVar = false;
                         encryptedresult=false;
                         MessageViewFragment.keyPassword = null;
                     }
@@ -278,10 +276,7 @@ public class MessageViewInfoExtractor {
     }
 
     public static String decrypt(String messageTo, String messageFr, String password, String encryptedMessage) {
-
-        Log.e("GETIRMFORMMM", messageFr);
         String decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo,messageFr, password, encryptedMessage);
-        Log.e("Getir decrypt", String.valueOf(decryptMessage));
         while (decryptMessage == null) {
             decryptMessage = OpenPGPEncryptDecrypt.decrypted(messageTo,messageFr, password, encryptedMessage);
             Log.e("Getir decrypt nullmu", String.valueOf(decryptMessage));

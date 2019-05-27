@@ -128,21 +128,25 @@ public class MessageTopView extends LinearLayout {
                 MessageHeader.carpiYap();
             }
             MessageExtractor.signatureVar=false;
+            Log.w("kilit", String.valueOf(MessageViewInfoExtractor.encryptedresult));
         }
         if(MessageExtractor.encryptedVar) {
+            //sifre cözümü icin
+            if(MessageViewInfoExtractor.encryptedresult){
+                MessageHeader.openlock();
+            }else{
+                MessageHeader.closelock();
+            }
+            //imza icin
             if (OpenPGPEncryptDecrypt.signAndEncrypt.equals("true") ) {
                 MessageHeader.tikYap();
             }
             if (OpenPGPEncryptDecrypt.signAndEncrypt.equals("false")){
                 MessageHeader.carpiYap();
             }
+            //sifirlamalar0
             OpenPGPEncryptDecrypt.signAndEncrypt = "";
             MessageExtractor.encryptedVar=false;
-            if(MessageViewInfoExtractor.encryptedresult){
-                MessageHeader.openlock();
-            }else{
-                MessageHeader.closelock();
-            }
             MessageViewInfoExtractor.encryptedresult=false;
         }
 

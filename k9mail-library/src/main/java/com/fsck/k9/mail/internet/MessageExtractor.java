@@ -211,7 +211,7 @@ public class MessageExtractor {
             final String mimeType = part.getMimeType();
             try {
                 signatureVar = true;
-                attachmentSignatureText = getTextFromTextPart(part, body, mimeType, 8000);
+                attachmentSignatureText = getTextFromTextPart(part, body, mimeType, 10000);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -226,7 +226,7 @@ public class MessageExtractor {
             final String mimeTypeEncrypt = part.getMimeType();
             try {
                 encryptedVar = true;
-                attachmentEncryptedText = getTextFromTextPart(part, body, mimeTypeEncrypt, 8000);
+                attachmentEncryptedText = getTextFromTextPart(part, body, mimeTypeEncrypt, 10000);
             } catch (IOException e) {
                 e.printStackTrace();
             }
